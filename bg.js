@@ -8,8 +8,8 @@ chrome.contextMenus.onClicked.addListener((a, b) =>
         let k = e.key, n = k == "." ? .016666666666666666 : k == "," ? -.016666666666666666 : 0
         if (n) {
           let h = location.href
-          if(!(u == h || v && v.checkVisibility()))
-            if(u = h, h = (v = document.getElementsByTagName("video")).length) {
+          if (!(u == h || v && v.checkVisibility()))
+            if (u = h, h = (v = document.getElementsByTagName("video")).length) {
               let w = 0, t = 0
               while (w < (t = v[--h].offsetWidth) && (w = t, k = h), h);
               v = v[k]

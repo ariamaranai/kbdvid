@@ -1,8 +1,12 @@
-chrome.contextMenus.onClicked.addListener((info, tab) =>
-    tab.url[0] != "c" &&
-    tab.url.slice(8, 23) != "www.youtube.com" &&
+(chrome => {
+  let run = (a, b) => {
+    let url = (b || a).url;
+    url[0] != "c" &&
+    url.slice(8, 23) != "www.youtube.com" &&
     chrome.scripting.executeScript({
-      target: { tabId: tab.id, frameIds: [info.frameId] },
+      target: b ?
+      { tabId: b.id, frameIds: [a.frameId] } :
+      { tabId: a.id },
       world: "MAIN",
       func: () => {
         let href;
@@ -10,12 +14,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) =>
         let keydownHandler = e => {
           e.stopImmediatePropagation();
           let k = e.key;
-          let t =
-            k == "."
-              ? 0.016666666666666666
-              : k == ","
-                ? -0.016666666666666666
-                : 0;
+          let t = k == "." ? 0.016666666666666666 : k == "," ? -0.016666666666666666 : 0;
           if (t) {
             let _href = location.href;
             if (!(_href == href || (video && video.checkVisibility()))) {
@@ -41,13 +40,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) =>
         }
         removeEventListener("keydown", keydownHandler);
         addEventListener("keydown", keydownHandler);
-    }
-  })
-);
-chrome.runtime.onInstalled.addListener(() =>
-  chrome.contextMenus.create({
-    id: "",
-    title: "Enable stepvf",
-    contexts: ["page", "video"]
-  })
-);
+      }
+    });
+  }
+  chrome.action.onClicked.addListener(run);
+  chrome.contextMenus.onClicked.addListener(run);
+  chrome.runtime.onInstalled.addListener(() =>
+    chrome.contextMenus.create({
+      id: "",
+      title: "Enable stepvf",
+      contexts: ["page", "video"]
+    })
+  );
+})(chrome)

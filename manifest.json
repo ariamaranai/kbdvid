@@ -15,5 +15,6 @@
   ],
   "background": {
     "service_worker": "bg.js"
-  }
+  },
+  "action": {}
 }

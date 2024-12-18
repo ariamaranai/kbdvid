@@ -32,23 +32,23 @@
                 video = videos[index];
               }
             }
-            if (video) {
-              video.paused || video.pause();
-              video.currentTime += t;
-            }
-          };
-        }
+            video && (
+              video.paused || video.pause(),
+              video.currentTime += t
+            );
+          }
+        };
         removeEventListener("keydown", keydownHandler);
         addEventListener("keydown", keydownHandler);
       }
     });
-  }
+  };
   chrome.action.onClicked.addListener(run);
   chrome.contextMenus.onClicked.addListener(run);
   chrome.runtime.onInstalled.addListener(() =>
     chrome.contextMenus.create({
       id: "",
-      title: "Enable stepvf",
+      title: "Stepvf",
       contexts: ["page", "video"]
     })
   );

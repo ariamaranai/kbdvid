@@ -19,7 +19,7 @@
             let _href = location.href;
             if (!(_href == href || (video && video.checkVisibility()))) {
               href = _href;
-              let videos = document.getElementsByTagName("video");
+              let videos = document.body.getElementsByTagName("video");
               let i = videos.length;
               if (i) {
                 let maxWidth = 0;
@@ -49,7 +49,8 @@
     chrome.contextMenus.create({
       id: "",
       title: "Stepvf",
-      contexts: ["page", "video"]
+      contexts: ["page", "video"],
+      documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
     })
   );
 })(chrome)

@@ -14,7 +14,12 @@
         let keydownHandler = e => {
           e.stopImmediatePropagation();
           let k = e.key;
-          let t = k == "." ? 0.016666666666666666 : k == "," ? -0.016666666666666666 : 0;
+          let t =
+              k == "."
+            ? 0.016666666666666666
+            : k == ","
+            ? -0.016666666666666666
+            : 0;
           if (t) {
             let _href = location.href;
             if (!(_href == href || (video && video.checkVisibility()))) {
@@ -32,17 +37,14 @@
                 video = videos[index];
               }
             }
-            video && (
-              video.paused || video.pause(),
-              video.currentTime += t
-            );
+            video && (video.paused || video.pause(), video.currentTime += t);
           }
         };
         removeEventListener("keydown", keydownHandler);
         addEventListener("keydown", keydownHandler);
       }
     });
-  };
+  }
   chrome.action.onClicked.addListener(run);
   chrome.contextMenus.onClicked.addListener(run);
   chrome.runtime.onInstalled.addListener(() =>

@@ -1,4 +1,4 @@
-(chrome => {
+{
   let run = async (a, b) => {
     let url = (b || a).url;
     if (url[0] != "c" && url.slice(8, 23) != "www.youtube.com") {
@@ -54,12 +54,12 @@
   chrome.action.setTitle({ title: "Enable stepvf" });
   chrome.action.onClicked.addListener(run);
   chrome.contextMenus.onClicked.addListener(run);
-  chrome.runtime.onInstalled.addListener(() =>
-    chrome.contextMenus.create({
-      id: "",
-      title: "Enable stepvf",
-      contexts: ["page", "video"],
-      documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
-    })
-  );
-})(chrome)
+}
+chrome.runtime.onInstalled.addListener(() =>
+  chrome.contextMenus.create({
+    id: "",
+    title: "Enable stepvf",
+    contexts: ["page", "video"],
+    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
+  })
+);

@@ -8,18 +8,14 @@
         tabId,
         path: isEnable ? "off.png" : "on.png"
       });
-      chrome.action.setTitle({
-        tabId,
-        title: isEnable ? "Enable stepvf" : "Disable stepvf"
-      });
-      chrome.contextMenus.update("", {
-        title: isEnable ? "Enable stepvf" : "Disable stepvf"
-      });
+      let title =  isEnable ? "Enable stepvf" : "Disable stepvf";
+      chrome.action.setTitle({ tabId, title });
+      chrome.contextMenus.update("", { title });
       chrome.scripting.executeScript({
         target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
         world: "MAIN",
-        args: [isEnable],
-        func: isEnable => {
+        args: [isEnable ? "removeEventListener" : "addEventListener"],
+        func: el => {
           let href;
           let video;
           let stepvf = e => {
@@ -48,7 +44,7 @@
               video && (video.paused || video.pause(), video.currentTime += t);
             }
           }
-          self[isEnable ? "removeEventListener" : "addEventListener"]("keydown", stepvf);
+          self[el]("keydown", stepvf);
         } 
       })
     }

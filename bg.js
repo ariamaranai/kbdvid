@@ -8,9 +8,7 @@
         tabId,
         path: isEnable ? "off.png" : "on.png"
       });
-      let title =  isEnable ? "Enable stepvf" : "Disable stepvf";
-      chrome.action.setTitle({ tabId, title });
-      chrome.contextMenus.update("", { title });
+      chrome.action.setTitle({ tabId, title: isEnable ?  "Enable stepvf" : "Disable stepvf" });
       chrome.scripting.executeScript({
         target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
         world: "MAIN",

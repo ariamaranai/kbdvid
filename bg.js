@@ -16,7 +16,7 @@
         func: el => {
           let href;
           let video;
-          let stepvf = e => {
+          let f = e => {
             e.stopImmediatePropagation();
             let k = e.key;
             let t = k == "." ? 0.016666666666666666 : k == "," && -0.016666666666666666
@@ -42,12 +42,12 @@
               video && (video.paused || video.pause(), video.currentTime += t);
             }
           }
-          self[el]("keydown", stepvf);
+          self[el]("keydown", f);
         } 
       })
     }
   }
-  chrome.action.setTitle({ title: "Enable stepvf" });
+  chrome.action.setTitle({ title: "stepvf" });
   chrome.action.onClicked.addListener(run);
   chrome.contextMenus.onClicked.addListener(run);
 }

@@ -11,7 +11,9 @@
       chrome.action.setTitle({ tabId, title: isEnable ?  "Enable stepvf" : "Disable stepvf" });
       chrome.scripting.executeScript({
         target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
-        world: "MAIN",
+        world: (await chrome.contentSettings.javascript.get({
+          primaryUrl: url
+        })).setting == "allow" ? "MAIN" : "ISOLATED",
         args: [isEnable ? "removeEventListener" : "addEventListener"],
         func: el => {
           let href;

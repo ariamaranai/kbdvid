@@ -1,7 +1,7 @@
 {
   let run = async (a, b) => {
     let url = (b || a).url;
-    if (url[0] != "c" && url.slice(8, 23) != "www.youtube.com") {
+    if (url[0] != "c" && url.slice(11, 20) != ".youtube.") {
       let tabId = (b || a).id;
       let isEnable = await chrome.action.getTitle({ tabId }) == "Disable stepvf";
       chrome.action.setIcon({

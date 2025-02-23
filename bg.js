@@ -16,7 +16,6 @@
           let href;
           let video;
           let f = e => {
-            debugger;
             e.stopImmediatePropagation();
             let k = e.key;
             let t = k == "." ? 0.016666666666666666 : k == "," && -0.016666666666666666
@@ -42,7 +41,6 @@
               video && (video.paused || video.pause(), video.currentTime += t);
             }
           }
-          debugger;
           self[el]("keydown", f);
         } 
       })

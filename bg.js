@@ -4,10 +4,7 @@
     if (url[0] != "c" && url.slice(11, 20) != ".youtube.") {
       let tabId = (b || a).id;
       let isEnable = await chrome.action.getTitle({ tabId }) == "Disable stepvf";
-      chrome.action.setIcon({
-        tabId,
-        path: isEnable ? "off.png" : "on.png"
-      });
+      chrome.action.setIcon({ tabId, path: isEnable ? "off.png" : "on.png" });
       chrome.action.setTitle({ tabId, title: isEnable ?  "Enable stepvf" : "Disable stepvf" });
       chrome.scripting.executeScript({
         target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
@@ -19,6 +16,7 @@
           let href;
           let video;
           let f = e => {
+            debugger;
             e.stopImmediatePropagation();
             let k = e.key;
             let t = k == "." ? 0.016666666666666666 : k == "," && -0.016666666666666666
@@ -44,12 +42,13 @@
               video && (video.paused || video.pause(), video.currentTime += t);
             }
           }
+          debugger;
           self[el]("keydown", f);
         } 
       })
     }
   }
-  chrome.action.setTitle({ title: "stepvf" });
+  chrome.action.setTitle({ title: "Enable stepvf" });
   chrome.action.onClicked.addListener(run);
   chrome.contextMenus.onClicked.addListener(run);
 }

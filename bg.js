@@ -3,20 +3,20 @@
     let url = (b || a).url;
     if (url[0] != "c" && url.slice(11, 20) != ".youtube.") {
       let tabId = (b || a).id;
-      let isEnable = await chrome.action.getTitle({ tabId }) == "Disable stepvf";
-      chrome.action.setIcon({ tabId, path: isEnable ? "off.png" : "on.png" });
-      chrome.action.setTitle({ tabId, title: isEnable ?  "Enable stepvf" : "Disable stepvf" });
+      let isEnabled = await chrome.action.getTitle({ tabId }) == "Disable stepvf";
+      chrome.action.setIcon({ tabId, path: isEnabled ? "off.png" : "on.png" });
+      chrome.action.setTitle({ tabId, title: isEnabled ?  "Enable stepvf" : "Disable stepvf" });
       try {
         chrome.scripting.executeScript({
           target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
-          args: [isEnable ? "removeEventListener" : "addEventListener"],
+          args: [isEnabled ? "removeEventListener" : "addEventListener"],
           func: el => {
             let href;
             let video;
             let f = e => {
               e.stopImmediatePropagation();
               let k = e.key;
-              let t = k == "." ? 0.016666666666666666 : k == "," && -0.016666666666666666
+              let t = k == "." ? 0.016666666666666666 : k == "," && -0.016666666666666666;
               if (t) {
                 let _href = location.href;
                 if (!(_href == href || (video && video.checkVisibility()))) {
@@ -31,7 +31,7 @@
                       while (
                         maxWidth < (width = video[--i].offsetWidth) && (maxWidth = width, index = i),
                         i
-                    ) ;
+                      );
                     }
                     video = videos[index];
                   }
@@ -39,7 +39,7 @@
                 video && (video.paused || video.pause(), video.currentTime += t);
               }
             }
-            self[el]("keydown", f);
+            self[el]("keydown", f, 1);
           }
         })
       } catch (e) {}

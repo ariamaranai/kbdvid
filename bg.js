@@ -16,7 +16,7 @@
             let f = e => {
               e.stopImmediatePropagation();
               let k = e.key;
-              let t = k == "." ? 0.016666666666666666 : k == "," && -0.016666666666666666;
+              let t = k == "." ? .016666666666666666 : k == "," && -.016666666666666666;
               if (t) {
                 let _href = location.href;
                 if (!(_href == href || (video && video.checkVisibility()))) {
@@ -41,7 +41,7 @@
             }
             self[el]("keydown", f, 1);
           }
-        })
+        });
       } catch (e) {}
     }
   }

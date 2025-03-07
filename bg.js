@@ -1,49 +1,45 @@
 {
   let run = async (a, b) => {
-    let url = (b || a).url;
-    if (url[0] != "c" && url.slice(11, 20) != ".youtube.") {
-      let tabId = (b || a).id;
-      let isEnabled = await chrome.action.getTitle({ tabId }) == "Disable stepvf";
-      chrome.action.setIcon({ tabId, path: isEnabled ? "off.png" : "on.png" });
-      chrome.action.setTitle({ tabId, title: isEnabled ?  "Enable stepvf" : "Disable stepvf" });
-      try {
-        chrome.scripting.executeScript({
-          target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
-          args: [isEnabled ? "removeEventListener" : "addEventListener"],
-          func: el => {
-            let href;
-            let video;
-            let f = e => {
-              e.stopImmediatePropagation();
-              let k = e.key;
-              let t = k == "." ? .016666666666666666 : k == "," && -.016666666666666666;
-              if (t) {
-                let _href = location.href;
-                if (!(_href == href || (video && video.checkVisibility()))) {
-                  href = _href;
-                  let videos = document.body.getElementsByTagName("video");
-                  let i = videos.length;
-                  if (i) {
-                    let index = 0;
-                    if (i > 1) {
-                      let maxWidth = 0;
-                      let width = 0;
-                      while (
-                        maxWidth < (width = video[--i].offsetWidth) && (maxWidth = width, index = i),
-                        i
-                      );
-                    }
-                    video = videos[index];
-                  }
+    let tabId = (b || a).id;
+    let isEnabled = await chrome.action.getTitle({ tabId }) == "Disable stepvf";
+    chrome.scripting.executeScript({
+      target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
+      args: [isEnabled ? "removeEventListener" : "addEventListener"],
+      func: el => {
+        let href;
+        let video;
+        let f = e => {
+          e.stopImmediatePropagation();
+          let k = e.key;
+          let t = k == "." ? .016666666666666666 : k == "," && -.016666666666666666;
+          if (t) {
+            let _href = location.href;
+            if (!(_href == href || (video && video.checkVisibility()))) {
+              href = _href;
+              let videos = document.body.getElementsByTagName("video");
+              let i = videos.length;
+              if (i) {
+                let index = 0;
+                if (i > 1) {
+                  let maxWidth = 0;
+                  let width = 0;
+                  while (
+                    maxWidth < (width = video[--i].offsetWidth) && (maxWidth = width, index = i),
+                    i
+                  );
                 }
-                video && (video.paused || video.pause(), video.currentTime += t);
+                video = videos[index];
               }
             }
-            self[el]("keydown", f, 1);
+            video && (video.paused || video.pause(), video.currentTime += t);
           }
-        });
-      } catch (e) {}
-    }
+        }
+        self[el]("keydown", f, 1);
+      }
+    }).then(() => (
+      chrome.action.setIcon({ tabId, path: isEnabled ? "off.png" : "on.png" }),
+      chrome.action.setTitle({ tabId, title: isEnabled ?  "Enable stepvf" : "Disable stepvf" })
+    )).catch(() => 0);
   }
   chrome.action.setTitle({ title: "Enable stepvf" });
   chrome.action.onClicked.addListener(run);

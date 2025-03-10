@@ -28,6 +28,7 @@
                       maxWidth < (width = video[--i].offsetWidth) && (maxWidth = width, index = i),
                       i
                     );
+                    video
                   }
                   video = videos[index];
                 }
@@ -51,6 +52,7 @@ chrome.runtime.onInstalled.addListener(() =>
   chrome.contextMenus.create({
     id: "",
     title: "stepvf",
-    contexts: ["page", "video"]
+    contexts: ["page", "video"],
+    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
   })
 );

@@ -51,8 +51,8 @@
 chrome.runtime.onInstalled.addListener(() =>
   chrome.contextMenus.create({
     id: "",
-    title: "stepvf",
+    title: "Stepvf",
     contexts: ["page", "video"],
-    documentUrlPatterns: ["https://*/*", "https://*/", "http://*/*", "http://*/", "file://*/*", "file://*/"]
+    documentUrlPatterns: ["https://*/*", "https://*/", "file://*/*", "file://*/"]
   })
 );

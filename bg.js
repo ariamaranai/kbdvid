@@ -25,10 +25,9 @@
                     let maxWidth = 0;
                     let width = 0;
                     while (
-                      maxWidth < (width = video[--i].offsetWidth) && (maxWidth = width, index = i),
+                      maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
                       i
                     );
-                    video
                   }
                   video = videos[index];
                 }

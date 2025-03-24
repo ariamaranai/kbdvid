@@ -52,6 +52,6 @@ chrome.runtime.onInstalled.addListener(() =>
     id: "",
     title: "Stepvf",
     contexts: ["page", "video"],
-    documentUrlPatterns: ["https://*/*", "https://*/", "file://*/*", "file://*/"]
+    documentUrlPatterns: ["https://*/*", "file://*"]
   })
 );

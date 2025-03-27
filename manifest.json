@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "stepvf",
   "version": "0",
-  "description": "Press '<' or '>' to step through video frames",
+  "description": "Press ',' or '.' to step through video frames",
   "icons": {
     "128": "off.png"
   },

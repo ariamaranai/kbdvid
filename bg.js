@@ -61,7 +61,7 @@ chrome.runtime.onInstalled.addListener(() => (
   }),
   chrome.userScripts.register([{
     id: "0",
-    js: [{ file: "main.js" }],
+    js: [{ code: "let v=document.querySelector('video');v&&(chrome.runtime.sendMessage(0),onkeydown=({key})=>{let t=key == '.'?.016666666666666666:key ==','&&-.016666666666666666;t&&(v.paused||v.pause(),v.currentTime+=t)})" }],
     matches: ["file://*.mp4"],
     runAt: "document_end"
   }]),

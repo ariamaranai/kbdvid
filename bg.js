@@ -52,7 +52,7 @@
 chrome.runtime.onUserScriptMessage.addListener((_, s, $) =>
   chrome.action.setIcon({
     tabId: s.tab.id,
-    path: "on.png"  
+    path: "on.png"
   })
 );
 chrome.runtime.onInstalled.addListener(() => (
@@ -61,7 +61,7 @@ chrome.runtime.onInstalled.addListener(() => (
   }),
   chrome.userScripts.register([{
     id: "0",
-    js: [{ code: "let v=document.querySelector('video');v&&(chrome.runtime.sendMessage(0),onkeydown=({key})=>{let t=key == '.'?.016666666666666666:key ==','&&-.016666666666666666;t&&(v.paused||v.pause(),v.currentTime+=t)})" }],
+    js: [{ code: 'let v=document.querySelector("video");v&&(chrome.runtime.sendMessage(0),onkeydown=e=>{let k=e.key,t=k=="."?.016666666666666666:k==","&&-.016666666666666666;t&&(v.paused||v.pause(),v.currentTime+=t)})'}],
     matches: ["file://*.mp4"],
     runAt: "document_end"
   }]),

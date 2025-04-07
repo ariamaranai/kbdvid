@@ -1,17 +1,15 @@
 {
   let run = (a, b) => {
-    if (b || !(a.url[0] == "f" && a.url.endsWith(".mp4"))) {
+    if ((b || a).url.slice(8, 23) != "www.youtube.com") {
       let tabId = (b || a).id;
-      chrome.action.getTitle({ tabId }, title => {
-        let isEnabled = title == "Disable stepvf";
-        chrome.userScripts.execute({
+      chrome.action.isEnabled(tabId, isEnabled =>
+        isEnabled && chrome.userScripts.execute({
           target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
           js: [{ code:
 `{
 let href;
 let video;
 let f = e => {
-  e.stopImmediatePropagation();
   let k = e.key;
   let t = k == "." ? .016666666666666666 : k == "," && -.016666666666666666;
   if (t) {
@@ -36,26 +34,24 @@ let f = e => {
     video && (video.paused || video.pause(), video.currentTime += t);
   }
 }
-self[${isEnabled ? '"removeEventListener"' : '"addEventListener"'}]("keydown", f, 1)         
+addEventListener("keydown", f, 1)
 }`
-          }]
-        }).then(() => (
-          chrome.action.setIcon({ tabId, path: isEnabled ? "off.png" : "on.png" }),
-          chrome.action.setTitle({ tabId, title: isEnabled ?  "Enable stepvf" : "Disable stepvf" })
-        )).catch(() => 0);
-      });
+            }]
+          }).then(() => (
+            chrome.action.disable(tabId),
+            chrome.action.setIcon({ tabId, path: "on.png" })
+          )).catch(() => 0)
+      )
     }
   }
-  chrome.action.setTitle({ title: "Enable stepvf" });
   chrome.action.onClicked.addListener(run);
   chrome.contextMenus.onClicked.addListener(run);
 }
-chrome.runtime.onUserScriptMessage.addListener((_, s, $) =>
-  chrome.action.setIcon({
-    tabId: s.tab.id,
-    path: "on.png"
-  })
-);
+chrome.runtime.onUserScriptMessage.addListener((_, s) => {
+  let tabId = s.tab.id;
+  chrome.action.disable(tabId);
+  chrome.action.setIcon({ tabId, path: "on.png" });
+});
 chrome.runtime.onInstalled.addListener(() => (
   chrome.userScripts.configureWorld({
     messaging: !0

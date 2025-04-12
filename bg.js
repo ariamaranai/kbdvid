@@ -34,7 +34,7 @@ let f = e => {
     video && (video.paused || video.pause(), video.currentTime += t);
   }
 }
-addEventListener("keydown", f, 1)
+addEventListener("keydown", f, 1);
 }`
             }]
           }).then(() => (
@@ -58,7 +58,7 @@ chrome.runtime.onInstalled.addListener(() => (
   }),
   chrome.userScripts.register([{
     id: "0",
-    js: [{ code: '{let v=document.querySelector("video");v&&(chrome.runtime.sendMessage(0),onkeydown=e=>{let k=e.key,t=k=="."?.03333333333333333:k==","&&-..03333333333333333;t&&(v.paused||v.pause(),v.currentTime+=t)})}'}],
+    js: [{ code: '{let v=document.querySelector("video");v&&(chrome.runtime.sendMessage(0),onkeydown=e=>{let k=e.key,t=k=="."?.03333333333333333:k==","&&-.03333333333333333;t&&(v.paused||v.pause(),v.currentTime+=t)})}'}],
     matches: ["file://*.mp4", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*"],
     runAt: "document_end"
   }]),

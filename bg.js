@@ -11,7 +11,7 @@ let href;
 let video;
 let f = e => {
   let k = e.key;
-  let t = k == "." ? .016666666666666666 : k == "," && -.016666666666666666;
+  let t = k == "." ? .03333333333333333 : k == "," && -.03333333333333333;
   if (t) {
     let _href = location.href;
     if (!(_href == href || (video && video.checkVisibility()))) {
@@ -58,7 +58,7 @@ chrome.runtime.onInstalled.addListener(() => (
   }),
   chrome.userScripts.register([{
     id: "0",
-    js: [{ code: '{let v=document.querySelector("video");v&&(chrome.runtime.sendMessage(0),onkeydown=e=>{let k=e.key,t=k=="."?.016666666666666666:k==","&&-.016666666666666666;t&&(v.paused||v.pause(),v.currentTime+=t)})}'}],
+    js: [{ code: '{let v=document.querySelector("video");v&&(chrome.runtime.sendMessage(0),onkeydown=e=>{let k=e.key,t=k=="."?.03333333333333333:k==","&&-..03333333333333333;t&&(v.paused||v.pause(),v.currentTime+=t)})}'}],
     matches: ["file://*.mp4", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*"],
     runAt: "document_end"
   }]),

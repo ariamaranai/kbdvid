@@ -39,7 +39,10 @@ addEventListener("keydown", f, 1);
             }]
           }).then(() => (
             chrome.action.disable(tabId),
-            chrome.action.setIcon({ tabId, path: "on.png" })
+            chrome.action.setIcon({
+              tabId,
+              path: "on.png"
+            })
           )).catch(() => 0)
       )
     }
@@ -50,7 +53,10 @@ addEventListener("keydown", f, 1);
 chrome.runtime.onUserScriptMessage.addListener((_, s) => {
   let tabId = s.tab.id;
   chrome.action.disable(tabId);
-  chrome.action.setIcon({ tabId, path: "on.png" });
+  chrome.action.setIcon({
+    tabId,
+    path: "on.png"
+  });
 });
 chrome.runtime.onInstalled.addListener(() => (
   chrome.userScripts.configureWorld({

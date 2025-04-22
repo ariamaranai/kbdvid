@@ -20,14 +20,12 @@ let f = e => {
       let i = videos.length;
       if (i) {
         let index = 0;
-        if (i > 1) {
-          let maxWidth = 0;
-          let width = 0;
-          while (
-            maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
-            i
-          );
-        }
+        let maxWidth = 0;
+        let width = 0;
+        while (
+          maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
+          i
+        );
         video = videos[index];
       }
     }

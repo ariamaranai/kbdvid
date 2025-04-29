@@ -72,16 +72,16 @@ chrome.runtime.onInstalled.addListener(() => (
     id: "0",
     js: [{ code:
 `{
-  let v = document.querySelector("video");
+  let v = document.body.querySelector("video");
   v && (
     chrome.runtime.sendMessage(0),
     onkeydown = e => {
       let k = e.keyCode;
       let t =
-        k == 39 ? 5
-      : k == 37 ? -5
-      : k == 190 ? .03333333333333333
-      : k == 188 && -.03333333333333333;
+          k == 39 ? 5
+        : k == 37 ? -5
+        : k == 190 ? .03333333333333333
+        : k == 188 && -.03333333333333333;
       t && (
         e.preventDefault(),
         v.paused || v.pause(),

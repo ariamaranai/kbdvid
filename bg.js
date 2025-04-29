@@ -10,8 +10,12 @@
 let href;
 let video;
 let f = e => {
-  let k = e.key;
-  let t = k == "." ? .03333333333333333 : k == "," && -.03333333333333333;
+  let k = e.keyCode;
+  let t =
+      k == 39 ? 5
+    : k == 37 ? -5
+    : k == 190 ? .03333333333333333
+    : k == 188 && -.03333333333333333;
   if (t) {
     let _href = location.href;
     if (!(_href == href || (video && video.checkVisibility()))) {
@@ -29,7 +33,11 @@ let f = e => {
         video = videos[index];
       }
     }
-    video && (video.paused || video.pause(), video.currentTime += t);
+    video && (
+      e.preventDefault(),
+      video.paused || video.pause(),
+      video.currentTime += t
+    );
   }
 }
 addEventListener("keydown", f, 1);
@@ -62,7 +70,26 @@ chrome.runtime.onInstalled.addListener(() => (
   }),
   chrome.userScripts.register([{
     id: "0",
-    js: [{ code: '{let v=document.querySelector("video");v&&(chrome.runtime.sendMessage(0),onkeydown=e=>{let k=e.key,t=k=="."?.03333333333333333:k==","&&-.03333333333333333;t&&(v.paused||v.pause(),v.currentTime+=t)})}'}],
+    js: [{ code:
+`{
+  let v = document.querySelector("video");
+  v && (
+    chrome.runtime.sendMessage(0),
+    onkeydown = e => {
+      let k = e.keyCode;
+      let t =
+        k == 39 ? 5
+      : k == 37 ? -5
+      : k == 190 ? .03333333333333333
+      : k == 188 && -.03333333333333333;
+      t && (
+        e.preventDefault(),
+        v.paused || v.pause(),
+        v.currentTime += t
+      );
+    }
+  )
+}`}],
     matches: ["file://*.mp4", "https://jra.webcdn.stream.ne.jp/web/jra/*", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*"],
     runAt: "document_end"
   }]),

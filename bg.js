@@ -9,18 +9,20 @@
 `{
 let href;
 let video;
+let { body } = document;
 let f = e => {
   let k = e.keyCode;
   let t =
       k == 39 ? 5
     : k == 37 ? -5
     : k == 190 ? .03333333333333333
-    : k == 188 && -.03333333333333333;
+    : k == 188 ? -.03333333333333333
+    : k == 122 && e.target == body && !document.fullscreenElement;
   if (t) {
     let _href = location.href;
-    if (!(_href == href || (video && video.checkVisibility()))) {
+    if (!(_href == href || video)) {
       href = _href;
-      let videos = document.body.getElementsByTagName("video");
+      let videos = body.getElementsByTagName("video");
       let i = videos.length;
       if (i) {
         let index = 0;
@@ -35,8 +37,9 @@ let f = e => {
     }
     video && (
       e.preventDefault(),
-      video.paused || video.pause(),
-      video.currentTime += t
+      t != !0
+        ? (video.pause(), video.currentTime += t)
+        : video.requestFullscreen()
     );
   }
 }
@@ -72,8 +75,8 @@ chrome.runtime.onInstalled.addListener(() => (
     id: "0",
     js: [{ code:
 `{
-  let v = document.body.querySelector("video");
-  v && (
+  let video = document.body.querySelector("video");
+  video && (
     chrome.runtime.sendMessage(0),
     onkeydown = e => {
       let k = e.keyCode;
@@ -81,14 +84,16 @@ chrome.runtime.onInstalled.addListener(() => (
           k == 39 ? 5
         : k == 37 ? -5
         : k == 190 ? .03333333333333333
-        : k == 188 && -.03333333333333333;
+        : k == 188 ? -.03333333333333333
+        : k == 122 && e.target != video && !document.fullscreenElement;
       t && (
         e.preventDefault(),
-        v.paused || v.pause(),
-        v.currentTime += t
+        t != !0
+          ? (video.pause(), video.currentTime += t)
+          : video.requestFullscreen()
       );
     }
-  )
+  );
 }`}],
     matches: ["file://*.mp4", "https://jra.webcdn.stream.ne.jp/web/jra/*", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*"],
     runAt: "document_end"

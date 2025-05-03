@@ -1,7 +1,7 @@
 {
   let video = document.body.querySelector("video");
-  video?.name &&= (
-    chrome.runtime.sendMessage(0),
+  video.childElementCount && (
+    video.firstChild.remove(chrome.runtime.sendMessage(0)),
     onkeydown = e => {
       let k = e.keyCode;
       let t =
@@ -16,7 +16,6 @@
           ? (video.pause(), video.currentTime += t)
           : video.requestFullscreen()
       );
-    },
-    ""
+    }
   );
 }

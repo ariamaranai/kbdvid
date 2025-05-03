@@ -67,40 +67,26 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
     path: "on.png"
   });
 });
+chrome.runtime.onMessageExternal.addListener(async tabId => {
+  chrome.userScripts.execute({
+    target: { tabId },
+    js: [{ file: "main.js" }]
+  })
+  return !0;
+});
 chrome.runtime.onInstalled.addListener(() => (
   chrome.userScripts.configureWorld({
     messaging: !0
   }),
   chrome.userScripts.register([{
     id: "0",
-    js: [{ code:
-`{
-  let video = document.body.querySelector("video");
-  video && (
-    chrome.runtime.sendMessage(0),
-    onkeydown = e => {
-      let k = e.keyCode;
-      let t =
-          k == 39 ? 5
-        : k == 37 ? -5
-        : k == 190 ? .03333333333333333
-        : k == 188 ? -.03333333333333333
-        : k == 122 && !document.fullscreenElement;
-      t && (
-        e.preventDefault(),
-        t != !0
-          ? (video.pause(), video.currentTime += t)
-          : video.requestFullscreen()
-      );
-    }
-  );
-}`}],
+    js: [{ file: "main.js" }],
     matches: ["file://*.mp4", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*", "https://jra.webcdn.stream.ne.jp/web/jra/*"],
     runAt: "document_end"
   }]),
   chrome.contextMenus.create({
     id: "",
-    title: "Stepvf",
+    title: "Enable keyboard shortcuts for video",
     contexts: ["page", "video"],
     documentUrlPatterns: ["https://*/*"]
   })

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "stepvf",
+  "name": "kbdvid",
   "version": "0",
-  "description": "Press ',' or '.' to step through video frames",
+  "description": "Enable keyboard shortcuts for video",
   "icons": {
     "128": "off.png"
   },

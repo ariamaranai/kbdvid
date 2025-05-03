@@ -85,7 +85,7 @@ chrome.runtime.onInstalled.addListener(() => (
         : k == 37 ? -5
         : k == 190 ? .03333333333333333
         : k == 188 ? -.03333333333333333
-        : k == 122 && e.target != video && !document.fullscreenElement;
+        : k == 122 && !document.fullscreenElement;
       t && (
         e.preventDefault(),
         t != !0
@@ -95,7 +95,7 @@ chrome.runtime.onInstalled.addListener(() => (
     }
   );
 }`}],
-    matches: ["file://*.mp4", "https://jra.webcdn.stream.ne.jp/web/jra/*", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*"],
+    matches: ["file://*.mp4", "https://video.twimg.com/*", "https://v16-webapp-prime.tiktok.com/*", "https://jra.webcdn.stream.ne.jp/web/jra/*"],
     runAt: "document_end"
   }]),
   chrome.contextMenus.create({

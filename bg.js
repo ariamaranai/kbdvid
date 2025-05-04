@@ -3,7 +3,7 @@
     if ((b || a).url.slice(8, 23) != "www.youtube.com") {
       let tabId = (b || a).id;
       chrome.action.isEnabled(tabId, isEnabled =>
-        chrome.userScripts.execute({
+        isEnabled && chrome.userScripts.execute({
           target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
           js: [{ code: 
 `{
@@ -19,8 +19,7 @@
         k == 39 ? 5
       : k == 37 ? -5
       : k == 190 ? .03333333333333333
-      : k == 188 ? -.03333333333333333
-      : k == 122 && !d.fullscreenElement;
+      : k == 188 && -.03333333333333333;
     if (t) {
       if (!video) {
         let videos = d.body.getElementsByTagName("video");
@@ -36,12 +35,11 @@
           video = videos[index];
         }
       }
-      video && (
+      t && video && (
         e.preventDefault(),
-        t != !0
-          ? (video.pause(), video.currentTime += t)
-          : video.requestFullscreen()
-      );
+        video.pause(),
+        video.currentTime += t
+      );  
     }
   }, 1);
 }`
@@ -67,13 +65,13 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
     path: "on.png"
   });
 });
-chrome.runtime.onMessageExternal.addListener(async tabId => {
+chrome.runtime.onMessageExternal.addListener(tabId => (
   chrome.userScripts.execute({
     target: { tabId },
     js: [{ file: "main.js" }]
-  })
-  return !0;
-});
+  }),
+  !0
+));
 chrome.runtime.onInstalled.addListener(() => (
   chrome.userScripts.configureWorld({
     messaging: !0

@@ -3,47 +3,47 @@
     if ((b || a).url.slice(8, 23) != "www.youtube.com") {
       let tabId = (b || a).id;
       chrome.action.isEnabled(tabId, isEnabled =>
-        isEnabled && chrome.userScripts.execute({
+        chrome.userScripts.execute({
           target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
-          js: [{ code:
+          js: [{ code: 
 `{
-let href;
-let video;
-let { body } = document;
-let f = e => {
-  let k = e.keyCode;
-  let t =
-      k == 39 ? 5
-    : k == 37 ? -5
-    : k == 190 ? .03333333333333333
-    : k == 188 ? -.03333333333333333
-    : k == 122 && e.target == body && !document.fullscreenElement;
-  if (t) {
-    let _href = location.href;
-    if (!(_href == href || video)) {
-      href = _href;
-      let videos = body.getElementsByTagName("video");
-      let i = videos.length;
-      if (i) {
-        let index = 0;
-        let maxWidth = 0;
-        let width = 0;
-        while (
-          maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
-          i
-        );
-        video = videos[index];
+  let video;
+  let d = document;
+  addEventListener("mouseup", e => e.button == 3 && d.fullscreenElement &&
+    d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
+    1
+  );
+  addEventListener("keydown", e => {
+    let k = e.keyCode;
+    let t =
+        k == 39 ? 5
+      : k == 37 ? -5
+      : k == 190 ? .03333333333333333
+      : k == 188 ? -.03333333333333333
+      : k == 122 && !d.fullscreenElement;
+    if (t) {
+      if (!video) {
+        let videos = d.body.getElementsByTagName("video");
+        let i = videos.length;
+        if (i) {
+          let index = 0;
+          let maxWidth = 0;
+          let width = 0;
+          while (
+            maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
+            i
+          );
+          video = videos[index];
+        }
       }
+      video && (
+        e.preventDefault(),
+        t != !0
+          ? (video.pause(), video.currentTime += t)
+          : video.requestFullscreen()
+      );
     }
-    video && (
-      e.preventDefault(),
-      t != !0
-        ? (video.pause(), video.currentTime += t)
-        : video.requestFullscreen()
-    );
-  }
-}
-addEventListener("keydown", f, 1);
+  }, 1);
 }`
             }]
           }).then(() => (

@@ -1,11 +1,10 @@
 {
   let d = document;
   let video = d.querySelector("video");
-  video.childElementCount && (
-    video.firstChild.remove(chrome.runtime.sendMessage(0)),
-
+  if (video.autoplay) {
+    chrome.runtime.sendMessage(video.autoplay = 0),
     onmouseup = e => e.button == 3 && d.fullscreenElement &&
-      d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
+      d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault()));
 
     onkeydown = e => {
       let k = e.keyCode;
@@ -22,5 +21,5 @@
           : video.requestFullscreen()
       );
     }
-  );
+  }
 }

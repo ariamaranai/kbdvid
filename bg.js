@@ -1,6 +1,6 @@
 {
   let run = (a, b) => {
-    if ((b || a).url.slice(8, 23) != "www.youtube.com") {
+    if ((b || a).url.slice(11, 20) != ".youtube.") {
       let tabId = (b || a).id;
       chrome.action.isEnabled(tabId, isEnabled =>
         isEnabled && chrome.userScripts.execute({
@@ -20,27 +20,24 @@
       : k == 37 ? -5
       : k == 190 ? .03333333333333333
       : k == 188 && -.03333333333333333;
-    if (t) {
-      if (!video) {
-        let videos = d.body.getElementsByTagName("video");
-        let i = videos.length;
-        if (i) {
-          let index = 0;
-          let maxWidth = 0;
-          let width = 0;
-          while (
-            maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
-            i
-          );
-          video = videos[index];
-        }
+    (t && (video ??= (() => {
+      let videos = d.body.getElementsByTagName("video");
+      let i = videos.length;
+      if (i) {
+        let index = 0;
+        let maxWidth = 0;
+        let width = 0;
+        while (
+          maxWidth < (width = videos[--i].offsetWidth) && (maxWidth = width, index = i),
+          i
+        );
+        return videos[index];
       }
-      t && video && (
-        e.preventDefault(),
-        video.pause(),
-        video.currentTime += t
-      );  
-    }
+    })())) && (
+      e.preventDefault(),
+      video.pause(),
+      video.currentTime += t
+    );  
   }, 1);
 }`
             }]
@@ -84,7 +81,7 @@ chrome.runtime.onInstalled.addListener(() => (
   }]),
   chrome.contextMenus.create({
     id: "",
-    title: "Enable keyboard shortcuts for video",
+    title: "Enable keyboard shortcuts",
     contexts: ["page", "video"],
     documentUrlPatterns: ["https://*/*"]
   })

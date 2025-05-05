@@ -1,11 +1,10 @@
 {
   let d = document;
   let video = d.querySelector("video");
-  if (video.autoplay) {
-    chrome.runtime.sendMessage(video.autoplay = 0),
+  if (video.childElementCount) {
+    chrome.runtime.sendMessage(video.lastChild.remove()),
     onmouseup = e => e.button == 3 && d.fullscreenElement &&
       d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault()));
-
     onkeydown = e => {
       let k = e.keyCode;
       let t =

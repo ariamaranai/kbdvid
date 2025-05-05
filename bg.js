@@ -2,9 +2,10 @@
   let run = (a, b) => {
     if ((b || a).url.slice(11, 20) != ".youtube.") {
       let tabId = (b || a).id;
+      let frameId = b && a.frameId;
       chrome.action.isEnabled(tabId, isEnabled =>
         isEnabled && chrome.userScripts.execute({
-          target: b ? { tabId, frameIds: [a.frameId] } : { tabId },
+          target: frameId ? { tabId, frameIds: [frameId] } : { tabId, allFrames: !0 },
           js: [{ code: 
 `{
   let video;

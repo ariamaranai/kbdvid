@@ -16,7 +16,7 @@
       t && (
         e.preventDefault(),
         t != !0
-          ? (video.pause(), video.currentTime += t)
+          ? (k > 39 && video.pause(), video.currentTime += t)
           : video.requestFullscreen()
       );
     }

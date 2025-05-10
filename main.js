@@ -2,9 +2,7 @@
   let d = document;
   let video = d.querySelector("video");
   if (video.childElementCount) {
-    chrome.runtime.sendMessage(video.lastChild.remove()),
-    onmouseup = e => e.button == 3 && d.fullscreenElement &&
-      d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault()));
+    chrome.runtime.sendMessage(video.lastChild.remove());
     onkeydown = e => {
       let k = e.keyCode;
       let t =
@@ -20,5 +18,10 @@
           : video.requestFullscreen()
       );
     }
+    onmouseup = e => e.button == 3 && d.fullscreenElement && d.exitFullscreen(e.preventDefault());
+    onwheel = e =>
+      video.playbackRate = e.deltaY < 0
+        ? Math.min(video.playbackRate + .25, 5)
+        : Math.max(video.playbackRate - .25, 0.25);
   }
 }

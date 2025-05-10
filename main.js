@@ -6,7 +6,11 @@
     onkeydown = e => {
       let k = e.keyCode;
       if (k == 8 || k == 17 || k == 46)
-        return e.preventDefault(video.controls = !video.controls);
+        return e.preventDefault(
+          video.onclick = (video.controls = !video.controls)
+            ? null
+            : e => (e.preventDefault(), video[video.paused ? "play" : "pause"]())
+        );
       if (k == 122 && !d.fullscreenElement)
         return video.requestFullscreen(e.preventDefault());
       (k = 

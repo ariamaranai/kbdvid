@@ -6,7 +6,8 @@
     onkeydown = e => {
       let k = e.keyCode;
       if (k == 8 || k == 17 || k == 46)
-        return e.preventDefault(
+        return (
+          e.preventDefault(),
           video.onclick = (video.controls = !video.controls)
             ? null
             : e => (e.preventDefault(), video[video.paused ? "play" : "pause"]())

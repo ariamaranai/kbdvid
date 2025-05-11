@@ -24,8 +24,16 @@
         video.currentTime += k
       );
     }
-    onmouseup = e => e.button == 3 && d.fullscreenElement &&
-      d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault()));
+    onmousedown = e => {
+      let { button } = e;
+      if (button == 4) {
+        e.preventDefault();
+        video.currentTime += 5;
+      } else if (button == 3) {
+        e.preventDefault();
+        video.currentTime -= 5;
+      }
+    }
     onwheel = e =>
       video.playbackRate = e.deltaY < 0
         ? Math.min(video.playbackRate + .25, 5)

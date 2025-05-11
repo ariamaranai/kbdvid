@@ -25,6 +25,7 @@
       );
     }
     onmousedown = e => {
+        e.preventDefault();
       let { button } = e;
       if (button == 4) {
         e.preventDefault();
@@ -34,9 +35,13 @@
         video.currentTime -= 5;
       }
     }
+
     onwheel = e =>
       video.playbackRate = e.deltaY < 0
         ? Math.min(video.playbackRate + .25, 5)
         : Math.max(video.playbackRate - .25, 0.25);
+
+    history.length > 1 &&
+    (onpopstate = () => history.pushState("", "", ""))();
   }
 }

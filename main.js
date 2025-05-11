@@ -25,7 +25,6 @@
       );
     }
     onmousedown = e => {
-        e.preventDefault();
       let { button } = e;
       if (button == 4) {
         e.preventDefault();

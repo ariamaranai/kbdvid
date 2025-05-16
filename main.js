@@ -1,11 +1,12 @@
 {
   let d = document;
   let video = d.querySelector("video");
-  if (video.childElementCount) {
-    chrome.runtime.sendMessage(video.lastChild.remove());
+  let { lastChild } = video;
+  if (lastChild) {
+    chrome.runtime.sendMessage(lastChild.remove());
     onkeydown = e => {
       let k = e.keyCode;
-      return k == 8 || k == 17 || k == 46
+      return k == 8 || k == 46
         ? (
           e.preventDefault(),
           video.onclick = (video.controls = !video.controls)

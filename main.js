@@ -1,8 +1,8 @@
 {
   let d = document;
   let video = d.querySelector("video");
-  let { lastChild } = video;
-  if (lastChild) {
+  if (video) {
+    let { lastChild } = video;
     chrome.runtime.sendMessage(lastChild.remove());
     onkeydown = e => {
       let k = e.keyCode;

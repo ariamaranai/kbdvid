@@ -4,6 +4,7 @@ chrome.runtime.sendMessage(0);
   let video = d.body.getElementsByTagName("video");
   let i = video.length;
   if (i == 1 && d.head.childElementCount == 1) {
+    video = video[0];
     onkeydown = e => {
       let k = e.keyCode;
       return k == 8 || k == 46

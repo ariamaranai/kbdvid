@@ -1,9 +1,9 @@
+chrome.runtime.sendMessage(0);
 {
   let d = document;
-  let video = d.querySelector("video");
-  if (video) {
-    let { lastChild } = video;
-    chrome.runtime.sendMessage(lastChild.remove());
+  let video = d.body.getElementsByTagName("video");
+  let i = video.length;
+  if (i == 1 && d.head.childElementCount == 1) {
     onkeydown = e => {
       let k = e.keyCode;
       return k == 8 || k == 46
@@ -40,5 +40,31 @@
 
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
+  } else if (i) {
+    let index = 0;
+    let maxWidth = 0;
+    let width = 0;
+    while (
+      maxWidth < (width = video[--i].offsetWidth) && (maxWidth = width, index = i),
+      i
+    );
+    video = video[index];
+    addEventListener("mouseup", e => e.button == 3 && d.fullscreenElement &&
+      d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
+      1
+    );
+    addEventListener("keydown", e => {
+      let k = e.keyCode;
+      let t =
+          k == 39 ? 5
+        : k == 37 ? -5
+        : k == 190 ? .03333333333333333
+        : k == 188 && -.03333333333333333;
+      t && (
+        e.preventDefault(),
+        video.pause(),
+        video.currentTime += t
+      );
+    }, 1);
   }
 }

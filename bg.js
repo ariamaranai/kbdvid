@@ -20,7 +20,7 @@ chrome.runtime.onInstalled.addListener(() => (
   chrome.userScripts.register([{
     id: "0",
     js: [{ file: "main.js" }],
-    matches: ["https://*/*.mp4*", "file://*/*.mp4*"],
+    matches: ["*://*/*.mp4*"],
     runAt: "document_end"
   }])
 ));

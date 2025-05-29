@@ -23,7 +23,7 @@ chrome.runtime.sendMessage(0);
               : k == 188 && -.03333333333333333
             ) == !1 || (
               e.preventDefault(),
-              Number.isInteger(k) || video.pause(),
+              k > 39 && video.pause(),
               video.currentTime += k
             );
     }
@@ -65,7 +65,7 @@ chrome.runtime.sendMessage(0);
         : k == 188 && -.03333333333333333;
       return t == !1 || (
         e.preventDefault(),
-        video.pause(),
+        k > 39 && video.pause(),
         video.currentTime += t
       );
     }, 1);

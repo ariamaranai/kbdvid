@@ -64,7 +64,7 @@ chrome.runtime.sendMessage(0);
         : k == 190 ? .03333333333333333
         : k == 188 && -.03333333333333333;
       return t == !1 || (
-        e.preventDefault(),
+        e.stopImmediatePropagation(e.preventDefault()),
         k > 39 && video.pause(),
         video.currentTime += t
       );

@@ -21,7 +21,7 @@ chrome.runtime.sendMessage(0);
               : k == 37 ? -5
               : k == 190 ? .03333333333333333
               : k == 188 && -.03333333333333333
-            ) && (
+            ) == !1 || (
               e.preventDefault(),
               Number.isInteger(k) || video.pause(),
               video.currentTime += k
@@ -50,7 +50,9 @@ chrome.runtime.sendMessage(0);
       i
     );
     video = video[index];
-    addEventListener("mouseup", e => e.button == 3 && d.fullscreenElement &&
+    addEventListener("mouseup", e =>
+      e.button == 3 &&
+      d.fullscreenElement &&
       d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
       1
     );
@@ -61,7 +63,7 @@ chrome.runtime.sendMessage(0);
         : k == 37 ? -5
         : k == 190 ? .03333333333333333
         : k == 188 && -.03333333333333333;
-      t && (
+      return t == !1 || (
         e.preventDefault(),
         video.pause(),
         video.currentTime += t

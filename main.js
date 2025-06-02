@@ -7,25 +7,19 @@ chrome.runtime.sendMessage(0);
     video = video[0];
     onkeydown = e => {
       let k = e.keyCode;
-      return k == 8 || k == 46
-        ? (
+      return k == 122 && !d.fullscreenElement
+        ? video.requestFullscreen(e.preventDefault())
+        : (
+          k = 
+              k == 39 ? 5
+            : k == 37 ? -5
+            : k == 190 ? .03333333333333333
+            : k == 188 && -.03333333333333333
+        ) == !1 || (
           e.preventDefault(),
-          video.onclick = (video.controls = !video.controls)
-            ? null
-            : e => (e.preventDefault(), video[video.paused ? "play" : "pause"]())
-        )
-        : k == 122 && !d.fullscreenElement
-          ? video.requestFullscreen(e.preventDefault())
-          : (k = 
-                k == 39 ? 5
-              : k == 37 ? -5
-              : k == 190 ? .03333333333333333
-              : k == 188 && -.03333333333333333
-            ) == !1 || (
-              e.preventDefault(),
-              k > 39 && video.pause(),
-              video.currentTime += k
-            );
+          k > 39 && video.pause(),
+          video.currentTime += k
+        );
     }
     onmousedown = e => {
       let { button } = e;

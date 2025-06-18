@@ -14,9 +14,7 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
   });
 });
 chrome.runtime.onInstalled.addListener(() => (
-  chrome.userScripts.configureWorld({
-    messaging: !0
-  }),
+  chrome.userScripts.configureWorld({ messaging: !0 }),
   chrome.userScripts.register([{
     id: "0",
     js: [{ file: "main.js" }],

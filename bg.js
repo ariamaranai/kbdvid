@@ -1,7 +1,7 @@
-chrome.action.onClicked.addListener(async a => {
+chrome.action.onClicked.addListener(a => {
   if (a.url.slice(11, 20) != ".youtube.") {
     try {
-      await chrome.userScripts.execute({
+      chrome.userScripts.execute({
         target: { tabId: a.id, allFrames: !0 },
         js: [{ file: "main.js" }]
       })

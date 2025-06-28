@@ -5,7 +5,7 @@ chrome.action.onClicked.addListener(async a => {
         target: { tabId: a.id, allFrames: !0 },
         js: [{ file: "main.js" }]
       })
-    } catch (e) {}
+    } catch {}
   }
 });
 chrome.runtime.onUserScriptMessage.addListener((_, s) => {

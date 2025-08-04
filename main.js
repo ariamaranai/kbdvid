@@ -1,10 +1,11 @@
 chrome.runtime.sendMessage(0);
 {
   let d = document;
-  let video = d.body.getElementsByTagName("video");
-  let i = video.length;
-  if (i == 1 && d.head.childElementCount == 1) {
-    video = video[0];
+  let videos = d.getElementsByTagName("video");
+  let videoLen = videos.length;
+  let video;
+  if (videoLen == 1 && d.head.childElementCount == 1) {
+    video = videos[0];
     onkeydown = e => {
       let k = e.keyCode;
       return k == 122 && !d.fullscreenElement
@@ -35,17 +36,25 @@ chrome.runtime.sendMessage(0);
 
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
-  } else if (i) {
-    let index = 0;
-    let maxWidth = 0;
-    let width = 0;
-    while (
-      video[--i].readyState &&
-      maxWidth < (width = video[i].offsetWidth) &&
-      (maxWidth = width, index = i),
-      i
-    );
-    video = video[index];
+  } else {
+    let { scrollingElement } = d; 
+    let cx = (innerWidth + scrollingElement.scrollLeft) / 2;
+    let cy = (innerHeight + scrollingElement.scrollTop) / 2; 
+    let minds = 2e9;
+    let i = 0;
+    while (i < videos.length) {
+      let _video = videos[i];
+      if (_video.readyState) {
+        let rect = _video.getBoundingClientRect();
+        let ds = Math.abs(cx - (rect.width / 2 + rect.x)) + Math.abs(cy - (rect.height / 2 + rect.y));
+        ds < minds && (
+          minds = ds,
+          video = _video
+        );
+      }
+      ++i;
+    }
+
     addEventListener("mouseup", e =>
       e.button == 3 &&
       d.fullscreenElement &&

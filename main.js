@@ -37,42 +37,41 @@ chrome.runtime.sendMessage(0);
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
   } else {
-    let { scrollingElement } = d; 
-    let cx = (innerWidth + scrollingElement.scrollLeft) / 2;
-    let cy = (innerHeight + scrollingElement.scrollTop) / 2; 
-    let minds = 2e9;
+    let { innerWidth, innerHeight } = self;
+    let maxVisibleSize = 0;
     let i = 0;
     while (i < videos.length) {
       let _video = videos[i];
       if (_video.readyState) {
-        let rect = _video.getBoundingClientRect();
-        let ds = Math.abs(cx - (rect.width / 2 + rect.x)) + Math.abs(cy - (rect.height / 2 + rect.y));
-        ds < minds && (
-          minds = ds,
+        let { x, right, y, bottom } = _video.getBoundingClientRect();
+        let visibleSize = Math.max(Math.min(right, innerWidth) - Math.max(x, 0), 0) * Math.max(Math.min(bottom, innerHeight) - Math.max(y, 0), 0);
+        maxVisibleSize < visibleSize && (
+          maxVisibleSize = visibleSize,
           video = _video
         );
       }
       ++i;
     }
-
-    addEventListener("mouseup", e =>
-      e.button == 3 &&
-      d.fullscreenElement &&
-      d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
-      1
+    video && (
+      addEventListener("mouseup", e =>
+        e.button == 3 &&
+        d.fullscreenElement &&
+        d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
+        1
+      ),
+      addEventListener("keydown", e => {
+        let k = e.keyCode;
+        let t =
+            k == 39 ? 5
+          : k == 37 ? -5
+          : k == 190 ? .03333333333333333
+          : k == 188 && -.03333333333333333;
+        return t == !1 || (
+          e.stopImmediatePropagation(e.preventDefault()),
+          k > 39 && video.pause(),
+          video.currentTime += t
+        )
+      }, 1)
     );
-    addEventListener("keydown", e => {
-      let k = e.keyCode;
-      let t =
-          k == 39 ? 5
-        : k == 37 ? -5
-        : k == 190 ? .03333333333333333
-        : k == 188 && -.03333333333333333;
-      return t == !1 || (
-        e.stopImmediatePropagation(e.preventDefault()),
-        k > 39 && video.pause(),
-        video.currentTime += t
-      );
-    }, 1);
   }
 }

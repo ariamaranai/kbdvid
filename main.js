@@ -37,14 +37,15 @@ chrome.runtime.sendMessage(0);
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
   } else {
-    let { innerWidth, innerHeight } = self;
+    let { Math, innerWidth, innerHeight } = self;
+    let { max, min } = Math;
     let maxVisibleSize = 0;
     let i = 0;
     while (i < videos.length) {
       let _video = videos[i];
       if (_video.readyState) {
         let { x, right, y, bottom } = _video.getBoundingClientRect();
-        let visibleSize = Math.max(Math.min(right, innerWidth) - Math.max(x, 0), 0) * Math.max(Math.min(bottom, innerHeight) - Math.max(y, 0), 0);
+        let visibleSize = max(min(right, innerWidth) - max(x, 0), 0) * max(min(bottom, innerHeight) - max(y, 0), 0);
         maxVisibleSize < visibleSize && (
           maxVisibleSize = visibleSize,
           video = _video

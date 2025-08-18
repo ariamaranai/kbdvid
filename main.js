@@ -82,7 +82,7 @@ chrome.runtime.sendMessage(0);
             ? Math.min(video.playbackRate + .25, 5)
             : Math.max(video.playbackRate - .25, 0.25)
         );
-      }, { passive: !1 })
+      }, { capture: !0, passive: !1 })
     );
   }
 }

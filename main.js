@@ -67,12 +67,22 @@ chrome.runtime.sendMessage(0);
           : k == 37 ? -5
           : k == 190 ? .03333333333333333
           : k == 188 && -.03333333333333333;
-        return t == !1 || (
+        return t == 0 || (
           e.stopImmediatePropagation(e.preventDefault()),
           k > 39 && video.pause(),
           video.currentTime += t
         )
-      }, 1)
+      }, 1),
+      addEventListener("wheel", e => {
+        let p = e.x;
+        let rect = video.getBoundingClientRect();
+        p <= rect.right && p >= rect.x && p <= rect.bottom && (p = e.y) >= rect.y && (
+          e.preventDefault(),
+          video.playbackRate = e.deltaY < 0
+            ? Math.min(video.playbackRate + .25, 5)
+            : Math.max(video.playbackRate - .25, 0.25)
+        );
+      }, { passive: !1 })
     );
   }
 }

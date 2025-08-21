@@ -1,12 +1,10 @@
 chrome.action.onClicked.addListener(async a => {
-  if (a.url.slice(11, 20) != ".youtube.") {
-    try {
-      await chrome.userScripts.execute({
-        target: { tabId: a.id, allFrames: !0 },
-        js: [{ file: "main.js" }]
-      })
-    } catch {}
-  }
+  try {
+    await chrome.userScripts.execute({
+      target: { tabId: a.id, allFrames: !0 },
+      js: [{ file: "main.js" }]
+    })
+  } catch {}
 });
 chrome.runtime.onUserScriptMessage.addListener((_, s) => {
   let tabId = s.tab.id;

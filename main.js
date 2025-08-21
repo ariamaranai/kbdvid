@@ -29,10 +29,12 @@ chrome.runtime.sendMessage(0);
         video.currentTime += button == 4 ? 5 : -5
       );
     }
-    onwheel = e =>
+    onwheel = e => {
+      let { playbackRate } = video;
       video.playbackRate = e.deltaY < 0
-        ? Math.min(video.playbackRate + .25, 5)
-        : Math.max(video.playbackRate - .25, 0.25);
+        ? Math.min(playbackRate + .25, 5)
+        : Math.max(playbackRate - .25, .25);
+    }
 
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
@@ -41,7 +43,7 @@ chrome.runtime.sendMessage(0);
     let { max, min } = Math;
     let maxVisibleSize = 0;
     let i = 0;
-    while (i < videos.length) {
+    while (i < videoLen) {
       let _video = videos[i];
       if (_video.readyState) {
         let { x, right, y, bottom } = _video.getBoundingClientRect();
@@ -76,12 +78,13 @@ chrome.runtime.sendMessage(0);
       addEventListener("wheel", e => {
         let p = e.x;
         let rect = video.getBoundingClientRect();
-        p <= rect.right && p >= rect.x && p <= rect.bottom && (p = e.y) >= rect.y && (
-          e.preventDefault(),
+        if (p <= rect.right && p >= rect.x && p <= rect.bottom && (p = e.y) >= rect.y) {
+          e.preventDefault();
+          let { playbackRate } = video;
           video.playbackRate = e.deltaY < 0
-            ? Math.min(video.playbackRate + .25, 5)
-            : Math.max(video.playbackRate - .25, 0.25)
-        );
+            ? Math.min(playbackRate + .25, 5)
+            : Math.max(playbackRate - .25, .25)
+        }
       }, { capture: !0, passive: !1 })
     );
   }

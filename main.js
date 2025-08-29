@@ -59,16 +59,16 @@ chrome.runtime.sendMessage(0);
       addEventListener("mouseup", e =>
         e.button == 3 &&
         d.fullscreenElement &&
+        location.host != "www.youtube.com" &&
         d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
         1
       ),
       addEventListener("keydown", e => {
         let k = e.keyCode;
-        let t =
-            k == 39 ? 5
-          : k == 37 ? -5
-          : k == 190 ? .03333333333333333
-          : k == 188 && -.03333333333333333;
+        let t = k == 39 ? 5
+              : k == 37 ? -5
+              : k == 190 ? .03333333333333333
+              : k == 188 && -.03333333333333333;
         return t == 0 || (
           e.stopImmediatePropagation(e.preventDefault()),
           k > 39 && video.pause(),
@@ -78,13 +78,13 @@ chrome.runtime.sendMessage(0);
       addEventListener("wheel", e => {
         let p = e.x;
         let rect = video.getBoundingClientRect();
-        if (p <= rect.right && p >= rect.x && p <= rect.bottom && (p = e.y) >= rect.y) {
-          e.preventDefault();
-          let { playbackRate } = video;
+        p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
+          e.preventDefault(),
+          p = video.playbackRate,
           video.playbackRate = e.deltaY < 0
-            ? Math.min(playbackRate + .25, 5)
-            : Math.max(playbackRate - .25, .25)
-        }
+            ? Math.min(p + .25, 5)
+            : Math.max(p - .25, .25)
+        );
       }, { capture: !0, passive: !1 })
     );
   }

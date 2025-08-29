@@ -4,6 +4,7 @@ chrome.runtime.sendMessage(0);
   let videos = d.getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
+  let { max, min } = Math;
   if (videoLen == 1 && d.head.childElementCount == 1) {
     video = videos[0];
     onkeydown = e => {
@@ -16,7 +17,7 @@ chrome.runtime.sendMessage(0);
             : k == 37 ? -5
             : k == 190 ? .03333333333333333
             : k == 188 && -.03333333333333333
-        ) == !1 || (
+        ) && (
           e.preventDefault(),
           k > 39 && video.pause(),
           video.currentTime += k
@@ -26,21 +27,20 @@ chrome.runtime.sendMessage(0);
       let { button } = e;
       button > 2 && (
         e.preventDefault(),
-        video.currentTime += button == 4 ? 5 : -5
+        video.currentTime += button < 4 ? -5 : 5
       );
     }
     onwheel = e => {
       let { playbackRate } = video;
       video.playbackRate = e.deltaY < 0
-        ? Math.min(playbackRate + .25, 5)
-        : Math.max(playbackRate - .25, .25);
+        ? min(playbackRate + .25, 5)
+        : max(playbackRate - .25, .25);
     }
 
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
   } else {
-    let { Math, innerWidth, innerHeight } = self;
-    let { max, min } = Math;
+    let { innerWidth, innerHeight } = self;
     let maxVisibleSize = 0;
     let i = 0;
     while (i < videoLen) {
@@ -56,6 +56,17 @@ chrome.runtime.sendMessage(0);
       ++i;
     }
     video && (
+      addEventListener("mousedown", e => {
+        let { button } = e;
+        if (button > 2) {
+          let rect = video.getBoundingClientRect();
+          let p = e.x;
+          p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
+            e.preventDefault(),
+            video.currentTime += button < 4 ? -5 : 5
+          );
+        }
+      }, 1),
       addEventListener("mouseup", e =>
         e.button == 3 &&
         d.fullscreenElement &&
@@ -69,7 +80,7 @@ chrome.runtime.sendMessage(0);
               : k == 37 ? -5
               : k == 190 ? .03333333333333333
               : k == 188 && -.03333333333333333;
-        return t == 0 || (
+        return t && (
           e.stopImmediatePropagation(e.preventDefault()),
           k > 39 && video.pause(),
           video.currentTime += t
@@ -82,8 +93,8 @@ chrome.runtime.sendMessage(0);
           e.preventDefault(),
           p = video.playbackRate,
           video.playbackRate = e.deltaY < 0
-            ? Math.min(p + .25, 5)
-            : Math.max(p - .25, .25)
+            ? min(p + .25, 5)
+            : max(p - .25, .25)
         );
       }, { capture: !0, passive: !1 })
     );

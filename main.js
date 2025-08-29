@@ -55,25 +55,23 @@ chrome.runtime.sendMessage(0);
       }
       ++i;
     }
-    video && (
+    if (video) {
+      let isSkip = 0;
       addEventListener("mousedown", e => {
         let { button } = e;
         if (button > 2) {
-          let rect = video.getBoundingClientRect();
           let p = e.x;
+          let rect = video.getBoundingClientRect();
           p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-            e.preventDefault(),
-            video.currentTime += button < 4 ? -5 : 5
-          );
+            e.stopImmediatePropagation(e.preventDefault()),
+            video.currentTime += button < 4 ? -5 : 5,
+            isSkip = 1
+          )
         }
       }, 1),
       addEventListener("mouseup", e =>
-        e.button == 3 &&
-        d.fullscreenElement &&
-        location.host != "www.youtube.com" &&
-        d.exitFullscreen(e.stopImmediatePropagation(e.preventDefault())),
-        1
-      ),
+        isSkip = (isSkip && e.stopImmediatePropagation(e.preventDefault()), 0),
+      1),
       addEventListener("keydown", e => {
         let k = e.keyCode;
         let t = k == 39 ? 5
@@ -97,6 +95,6 @@ chrome.runtime.sendMessage(0);
             : max(p - .25, .25)
         );
       }, { capture: !0, passive: !1 })
-    );
+    }
   }
 }

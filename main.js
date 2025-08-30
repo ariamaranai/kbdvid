@@ -8,20 +8,21 @@ chrome.runtime.sendMessage(0);
   if (videoLen == 1 && d.head.childElementCount == 1) {
     video = videos[0];
     onkeydown = e => {
+      e.preventDefault();
       let k = e.keyCode;
-      return k == 122 && !d.fullscreenElement
-        ? video.requestFullscreen(e.preventDefault())
-        : (
-          k = 
-              k == 39 ? 5
-            : k == 37 ? -5
-            : k == 190 ? .03333333333333333
-            : k == 188 && -.03333333333333333
-        ) && (
-          e.preventDefault(),
-          k > 39 && video.pause(),
-          video.currentTime += k
-        );
+      if (k == 122 && !d.fullscreenElement)
+        video.requestFullscreen(e.preventDefault())
+      else {
+        let _k =
+            k == 39 ? 5
+          : k == 37 ? -5
+          : k == 190 ? .03333333333333333
+          : k == 188 && -.03333333333333333;
+        _k
+          ? (_k > 39 && video.pause(), video.currentTime += _k)
+          : (_k = k == 38 ? .1 : k == 40 && -.1) && (video.volume = min(max(video.volume + _k, 0), 1));
+      }
+      return !0;
     }
     onmousedown = e => {
       let { button } = e;
@@ -56,7 +57,7 @@ chrome.runtime.sendMessage(0);
       ++i;
     }
     if (video) {
-      let isSkip = 0;
+      let isSkip;
       addEventListener("mousedown", e => {
         let { button } = e;
         if (button > 2) {

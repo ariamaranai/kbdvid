@@ -7,8 +7,9 @@
     "128": "off.png"
   },
   "permissions": [
-    "userScripts",
-    "tabs"
+    "contextMenus",
+    "tabs",
+    "userScripts"
   ],
   "host_permissions": [
     "<all_urls>"

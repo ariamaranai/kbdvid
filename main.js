@@ -78,9 +78,10 @@ chrome.runtime.sendMessage(0);
       ++i;
     }
     if (video) {
-      let wrapper = document.createElement("aside");
-      video.after(wrapper);
-      wrapper.append(video, modal);
+      let wrapper = document.createElement("wrapper");
+      wrapper.setAttribute("style", "all:unset;display:flow;height:inherit");
+      video.after(wrapper, modal);
+      wrapper.appendChild(video);
       let isSkip;
       addEventListener("mousedown", e => {
         let { button } = e;
@@ -120,7 +121,7 @@ chrome.runtime.sendMessage(0);
           e.preventDefault();
           let delta = e.deltaY < 0;
           if (rightClick)
-            wrapper.setAttribute("style", "filter:brightness(" + (delta ? ++brightness : --brightness) + "%)");
+            wrapper.attributeStyleMap.set("filter", CSSStyleValue.parse("filter", "brightness(" + (delta ? ++brightness : --brightness) + "%)"));
           else {
             p = video.playbackRate;
             let value = x + rect.width / 2;

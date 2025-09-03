@@ -126,7 +126,7 @@ chrome.runtime.sendMessage(0);
             let value = x + rect.width / 2;
             ex != value && modal.attributeStyleMap.set("left", (px.value = (ex = value) - 32, px));
             ey != y && modal.attributeStyleMap.set("top", (px.value = (ey = y) + 16, px));
-            modal.textContent = (video.playbackRate = e.deltaY < 0 ? min(p + .25, 5) : max(p - .25, .25)) + "x";
+            modal.textContent = (video.playbackRate = delta ? min(p + .25, 5) : max(p - .25, .25)) + "x";
             modal.hidden = 0;
             clearTimeout(timer);
             timer = setTimeout(() => modal.hidden = "until-found", 1500);

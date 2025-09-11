@@ -15,7 +15,7 @@ chrome.runtime.sendMessage(0);
     cue &&= (track.removeCue(cue), 0);
     track.addCue(cue = new VTTCue(0, 65535, (video.playbackRate = delta < 0 ? min(playbackRate + .25, 5) : max(playbackRate - .25, .25)) + "x"));
     clearTimeout(timer);
-    timer = setTimeout(() => cue = (track.removeCue(cue), 0), 2000);
+    timer = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
   }
   if (videoLen == 1 && d.head.childElementCount == 1) {
     track = (video = videos[0]).addTextTrack("subtitles");

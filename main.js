@@ -4,21 +4,23 @@ chrome.runtime.sendMessage(0);
   let videos = d.getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
+  let track;
+  let cue;
   let { max, min } = Math;
-  let modal = d.createElement("modal");
   let brightness = 100;
-  let px = CSS.px(0);
-  let ex;
-  let ey;
   let timer = 0;
   let rightClick = 0;
-
-  modal.setAttribute("style", "all:unset;position:fixed;z-index:2147483647;width:64px;height:24px;border-radius:4px;background:#0009;font:600 12px/2 arial;color:#eee;text-align:center;user-select:none");
-  modal.hidden = "until-found";
-
+  let addCue = delta => {
+    let { playbackRate } = video;
+    cue &&= (track.removeCue(cue), 0);
+    track.addCue(cue = new VTTCue(0, 65535, (video.playbackRate = delta < 0 ? min(playbackRate + .25, 5) : max(playbackRate - .25, .25)) + "x"));
+    clearTimeout(timer);
+    timer = setTimeout(() => cue = (track.removeCue(cue), 0), 2000);
+  }
   if (videoLen == 1 && d.head.childElementCount == 1) {
+    track = (video = videos[0]).addTextTrack("subtitles");
+    track.mode = "showing";
     let root = d.documentElement;
-    (video = videos[0]).after(modal);
     onkeydown = e => {
       let k = e.keyCode;
       if (k == 122 && !d.fullscreenElement)
@@ -43,22 +45,11 @@ chrome.runtime.sendMessage(0);
       );
     }
     onmouseup = () => rightClick = 0;
-    onwheel = e => {
-      let delta = e.deltaY < 0;
-      if (rightClick)
-        root.setAttribute("style", "filter:brightness(" + (delta ? ++brightness : --brightness) + "%)");
-      else {
-        let { playbackRate } = video;
-        let y = video.getBoundingClientRect().y;
-        let w = innerWidth;
-        modal.textContent = (video.playbackRate = delta ? min(playbackRate + .25, 5) : max(playbackRate - .25, .25)) + "x";
-        ex != w && modal.attributeStyleMap.set("left", (px.value = (ex = w) / 2 - 32, px));
-        ey != y && modal.attributeStyleMap.set("top", (px.value = (ey = y) + 16, px));
-        modal.hidden = 0;
-        clearTimeout(timer);
-        timer = setTimeout(() => modal.hidden = "until-found", 1500);
-      }
-    }  
+    onwheel = e =>
+      rightClick
+        ? root.setAttribute("style", "filter:brightness(" + (delta ? ++brightness : --brightness) + "%)")
+        : addCue(e.deltaY);
+
     history.length > 1 &&
     (onpopstate = () => history.pushState("", "", ""))();
   } else {
@@ -78,9 +69,11 @@ chrome.runtime.sendMessage(0);
       ++i;
     }
     if (video) {
+      track = video.addTextTrack("subtitles");
+      track.mode = "showing";
       let wrapper = document.createElement("wrapper");
       wrapper.setAttribute("style", "all:unset;display:flow;height:inherit");
-      video.after(wrapper, modal);
+      video.after(wrapper);
       wrapper.appendChild(video);
       let isSkip;
       addEventListener("mousedown", e => {
@@ -117,23 +110,12 @@ chrome.runtime.sendMessage(0);
         let p = e.x;
         let rect = video.getBoundingClientRect();
         let { x, y } = rect;
-        if (p >= x && p <= rect.right && (p = e.y) >= y && p <= rect.bottom) {
-          e.preventDefault();
-          let delta = e.deltaY < 0;
-          if (rightClick)
-            wrapper.attributeStyleMap.set("filter", CSSStyleValue.parse("filter", "brightness(" + (delta ? ++brightness : --brightness) + "%)"));
-          else {
-            p = video.playbackRate;
-            let value = x + rect.width / 2;
-            ex != value && modal.attributeStyleMap.set("left", (px.value = (ex = value) - 32, px));
-            ey != y && modal.attributeStyleMap.set("top", (px.value = (ey = y) + 16, px));
-            modal.textContent = (video.playbackRate = delta ? min(p + .25, 5) : max(p - .25, .25)) + "x";
-            modal.hidden = 0;
-            clearTimeout(timer);
-            timer = setTimeout(() => modal.hidden = "until-found", 1500);
-          }
-        } else
-          modal.hidden = "until-found";
+        p >= x && p <= rect.right && (p = e.y) >= y && p <= rect.bottom && (
+          e.stopImmediatePropagation(e.preventDefault()),
+          rightClick
+            ? wrapper.attributeStyleMap.set("filter", CSSStyleValue.parse("filter", "brightness(" + (delta ? ++brightness : --brightness) + "%)"))
+            : addCue(e.deltaY)
+        );
       }, { capture: !0, passive: !1 });
     }
   }

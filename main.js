@@ -8,14 +8,27 @@ chrome.runtime.sendMessage(0);
   let cue;
   let { max, min } = Math;
   let brightness = 100;
-  let timer = 0;
+  let timer0 = 0;
+  let timer1 = 0;
+  let timer2 = 0;
   let rightClick = 0;
+  let onMouseHold = button => {
+    if ((rightClick = button == 2) == 0) {
+      let t = button = button < 4 ? -5 : 5;
+      video.currentTime += t;
+      timer0 = setTimeout(() => (
+        video.currentTime += t,
+        timer1 = setInterval(() => video.currentTime += t, 127)),
+        500
+      );
+    }
+  }
   let addCue = delta => {
     let { playbackRate } = video;
     cue &&= (track.removeCue(cue), 0);
     track.addCue(cue = new VTTCue(0, 65535, (video.playbackRate = delta < 0 ? min(playbackRate + .25, 5) : max(playbackRate - .25, .25)) + "x"));
-    clearTimeout(timer);
-    timer = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
+    clearTimeout(timer2);
+    timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
   }
   if (videoLen == 1 && d.head.childElementCount == 1) {
     track = (video = videos[0]).addTextTrack("subtitles");
@@ -26,14 +39,13 @@ chrome.runtime.sendMessage(0);
       if (k == 122 && !d.fullscreenElement)
         video.requestFullscreen(e.preventDefault())
       else {
-        let _k =
+        let t =
             k == 39 ? 5
           : k == 37 ? -5
           : k == 190 ? .03333333333333333
           : k == 188 && -.03333333333333333;
-        _k
-          ? (e.preventDefault(), _k > 39 && video.pause(), video.currentTime += _k)
-          : (_k = k == 38 ? .1 : k == 40 && -.1) && (video.volume = min(max(video.volume + _k, 0), 1));
+        t ? (e.preventDefault(), k > 39 && video.pause(), video.currentTime += t)
+          : (t = k == 38 ? .1 : k == 40 && -.1) && (video.volume = min(max(video.volume + t, 0), 1));
       }
       return !0;
     }
@@ -41,10 +53,14 @@ chrome.runtime.sendMessage(0);
       let { button } = e;
       button > 1 && (
         e.preventDefault(),
-        (rightClick = button == 2) || (video.currentTime += button < 4 ? -5 : 5)
-      );
+        onMouseHold(button)
+      )
     }
-    onmouseup = () => rightClick = 0;
+    onmouseup = () => (
+      timer0 &&= (clearTimeout(timer0), 0),
+      timer1 &&= (clearInterval(timer1), 0),
+      rightClick = 0
+    );
     onwheel = e =>
       rightClick
         ? root.setAttribute("style", "filter:brightness(" + (delta ? ++brightness : --brightness) + "%)")
@@ -75,23 +91,21 @@ chrome.runtime.sendMessage(0);
       wrapper.setAttribute("style", "all:unset;display:flow;height:inherit");
       video.after(wrapper);
       wrapper.appendChild(video);
-      let isSkip;
       addEventListener("mousedown", e => {
         let { button } = e;
         if (button > 1) {
           let p = e.x;
           let rect = video.getBoundingClientRect();
           p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-            e.stopImmediatePropagation(e.preventDefault()),
-            rightClick = button == 2 || (
-              video.currentTime += button < 4 ? -5 : 5,
-              isSkip = 1
-            )
+            e.preventDefault(),
+            onMouseHold(button)
           );
         }
       }, 1),
       addEventListener("mouseup", e => (
-        isSkip = (isSkip && e.stopImmediatePropagation(e.preventDefault()), 0),
+        e.stopImmediatePropagation(e.preventDefault()),
+        timer0 &&= (clearTimeout(timer0), 0),
+        timer1 &&= (clearInterval(timer1), 0),
         rightClick = 0
       ), 1);
       addEventListener("keydown", e => {

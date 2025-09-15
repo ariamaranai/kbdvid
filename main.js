@@ -103,7 +103,7 @@ chrome.runtime.sendMessage(0);
         }
       }, 1),
       addEventListener("mouseup", e => (
-        e.stopImmediatePropagation(e.preventDefault()),
+        e.preventDefault(),
         timer0 &&= (clearTimeout(timer0), 0),
         timer1 &&= (clearInterval(timer1), 0),
         rightClick = 0

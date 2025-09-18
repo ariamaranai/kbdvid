@@ -1,4 +1,4 @@
-chrome.runtime.onUserScriptMessage.addListener((_, s) => {
+chrome.runtime.onUserScriptMessage.addListener((m, s) => {
   let tabId = s.tab.id;
   chrome.action.disable(tabId);
   chrome.action.setIcon({
@@ -11,7 +11,7 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
   });
 });
 {
-  let e = (a, b) => {
+  let f = (a, b) => {
     let { id: tabId } = b || a;
     chrome.action.getTitle({ tabId }, async title => {
       try {
@@ -23,9 +23,9 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
       } catch {}
     })
   }
-  chrome.action.onClicked.addListener(e);
-  chrome.contextMenus.onClicked.addListener(e);
-  let f = () => {
+  chrome.action.onClicked.addListener(f);
+  chrome.contextMenus.onClicked.addListener(f);
+  let onStartup = () => {
     let { userScripts } = chrome;
     userScripts &&
     userScripts.getScripts(scripts =>
@@ -37,11 +37,11 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
           matches: ["https://*/*.mp4*", "file://*.mp4*"],
           runAt: "document_end"
         }]),
-        chrome.runtime.onStartup.removeListener(f) 
+        chrome.runtime.onStartup.removeListener(onStartup) 
       )
     );
   }
-  chrome.runtime.onStartup.addListener(f);
+  chrome.runtime.onStartup.addListener(onStartup);
   chrome.runtime.onInstalled.addListener(() => (
     chrome.contextMenus.create({
       id: "",
@@ -49,6 +49,6 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
       contexts: ["page", "frame", "video"],
       documentUrlPatterns: ["https://*/*"]
     }),
-    f()
+    onStartup()
   ));
 }

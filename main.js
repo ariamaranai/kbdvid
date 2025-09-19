@@ -104,8 +104,7 @@
           );
         }
       }, 1),
-      addEventListener("mouseup", e => (
-        e.preventDefault(),
+      addEventListener("mouseup", () => (
         timer0 &&= (clearTimeout(timer0), 0),
         timer1 &&= (clearInterval(timer1), 0),
         rightClick = 0

@@ -54,8 +54,7 @@
       let { button } = e;
       button > 1 && (
         e.preventDefault(),
-        onMouseHold(button),
-        inVideo = 1
+        onMouseHold(button)
       )
     }
     onmouseup = () => (
@@ -108,7 +107,7 @@
           let p = e.x;
           let rect = video.getBoundingClientRect();
           p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-            e.preventDefault(),
+            e.preventDefault(inVideo = 1),
             onMouseHold(button)
           );
         }
@@ -116,6 +115,7 @@
       let onMouseUp = e => (
         timer0 &&= clearTimeout(timer0),
         timer1 &&= clearInterval(timer1),
+        inVideo &&= e.preventDefault(),
         rightClick = 0
       );
       let onWheel = e => {

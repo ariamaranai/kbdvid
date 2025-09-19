@@ -11,8 +11,8 @@ chrome.runtime.onUserScriptMessage.addListener((m, s) => {
   });
 });
 {
-  let f = (a, b) => {
-    let { id: tabId } = b || a;
+  let f = a => {
+    let { id: tabId } = a;
     chrome.action.getTitle({ tabId }, async title => {
       try {
         title == "kbdvid" &&
@@ -24,7 +24,6 @@ chrome.runtime.onUserScriptMessage.addListener((m, s) => {
     })
   }
   chrome.action.onClicked.addListener(f);
-  chrome.contextMenus.onClicked.addListener(f);
   chrome.windows.onBoundsChanged.addListener(window =>
     window.state == "fullscreen" &&
     chrome.tabs.query({ audible: !0, windowId: window.id }, tabs => {
@@ -48,13 +47,5 @@ chrome.runtime.onUserScriptMessage.addListener((m, s) => {
     );
   }
   chrome.runtime.onStartup.addListener(onStartup);
-  chrome.runtime.onInstalled.addListener(() => (
-    chrome.contextMenus.create({
-      id: "",
-      title: "Enable kbdvid",
-      contexts: ["page", "frame", "video"],
-      documentUrlPatterns: ["https://*/*"]
-    }),
-    onStartup()
-  ));
+  chrome.runtime.onInstalled.addListener(onStartup);
 }

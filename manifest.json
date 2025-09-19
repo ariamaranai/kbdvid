@@ -7,7 +7,6 @@
     "128": "off.png"
   },
   "permissions": [
-    "contextMenus",
     "tabs",
     "userScripts"
   ],

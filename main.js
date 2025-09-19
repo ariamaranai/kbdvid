@@ -16,9 +16,10 @@
     if ((rightClick = button == 2) == 0) {
       let t = button = button < 4 ? -5 : 5;
       video.currentTime += t;
+      timer1 = -1;
       timer0 = setTimeout(() => (
         video.currentTime += t,
-        timer1 = setInterval(() => video.currentTime += t, 127)),
+        timer1 &&= setInterval(() => video.currentTime += t, 127)),
         500
       );
     }
@@ -59,8 +60,8 @@
       )
     }
     onmouseup = () => (
-      timer0 &&= (clearTimeout(timer0), 0),
-      timer1 &&= (clearInterval(timer1), 0),
+      timer0 &&= clearTimeout(timer0),
+      timer1 &&= clearInterval(timer1),
       rightClick = 0
     );
     onwheel = e => {
@@ -113,8 +114,8 @@
         }
       }
       let onMouseUp = e => (
-        timer0 &&= (clearTimeout(timer0), 0),
-        timer1 &&= (clearInterval(timer1), 0),
+        timer0 &&= clearTimeout(timer0),
+        timer1 &&= clearInterval(timer1),
         inVideo && e.stopImmediatePropagation(e.preventDefault()),
         inVideo = rightClick = 0
       );

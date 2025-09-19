@@ -25,6 +25,12 @@ chrome.runtime.onUserScriptMessage.addListener((m, s) => {
   }
   chrome.action.onClicked.addListener(f);
   chrome.contextMenus.onClicked.addListener(f);
+  chrome.windows.onBoundsChanged.addListener(window =>
+    window.state == "fullscreen" &&
+    chrome.tabs.query({ audible: !0, windowId: window.id }, tabs => {
+      tabs.length && f(tabs[0]);
+    })
+  );
   let onStartup = () => {
     let { userScripts } = chrome;
     userScripts &&

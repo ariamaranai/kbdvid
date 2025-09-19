@@ -11,7 +11,6 @@
   let timer1;
   let timer2;
   let rightClick;
-  let inVideo;
   let onMouseHold = button => {
     if ((rightClick = button == 2) == 0) {
       let t = button = button < 4 ? -5 : 5;
@@ -90,6 +89,7 @@
     }
     if (video) {
       chrome.runtime.sendMessage(0);
+      let inVideo;
       let onKeyDown = e => {
         let k = e.keyCode;
         let t = k == 39 ? 5
@@ -108,7 +108,7 @@
           let p = e.x;
           let rect = video.getBoundingClientRect();
           p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-            e.preventDefault(inVideo = 1),
+            e.preventDefault(),
             onMouseHold(button)
           );
         }
@@ -116,8 +116,7 @@
       let onMouseUp = e => (
         timer0 &&= clearTimeout(timer0),
         timer1 &&= clearInterval(timer1),
-        inVideo && e.stopImmediatePropagation(e.preventDefault()),
-        inVideo = rightClick = 0
+        rightClick = 0
       );
       let onWheel = e => {
         let p = e.x;

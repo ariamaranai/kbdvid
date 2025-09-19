@@ -89,30 +89,7 @@
     }
     if (video) {
       chrome.runtime.sendMessage(0);
-      track = video.addTextTrack("subtitles");
-      track.mode = "showing";
-      let wrapper = document.createElement("wrapper");
-      wrapper.setAttribute("style", "all:unset;display:flow;height:inherit");
-      video.after(wrapper);
-      wrapper.appendChild(video);
-      addEventListener("mousedown", e => {
-        let { button } = e;
-        if (button > 1) {
-          let p = e.x;
-          let rect = video.getBoundingClientRect();
-          p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-            e.preventDefault(inVideo = 1),
-            onMouseHold(button)
-          );
-        }
-      }, 1),
-      addEventListener("mouseup", e => (
-        timer0 &&= (clearTimeout(timer0), 0),
-        timer1 &&= (clearInterval(timer1), 0),
-        inVideo && e.stopImmediatePropagation(e.preventDefault()),
-        inVideo = rightClick = 0
-      ), 1);
-      addEventListener("keydown", e => {
+      let onKeyDown = e => {
         let k = e.keyCode;
         let t = k == 39 ? 5
               : k == 37 ? -5
@@ -123,8 +100,25 @@
           k > 39 && video.pause(),
           video.currentTime += t
         )
-      }, 1);
-      addEventListener("wheel", e => {
+      }
+      let onMouseDown = e => {
+        let { button } = e;
+        if (button > 1) {
+          let p = e.x;
+          let rect = video.getBoundingClientRect();
+          p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
+            e.preventDefault(inVideo = 1),
+            onMouseHold(button)
+          );
+        }
+      }
+      let onMouseUp = e => (
+        timer0 &&= (clearTimeout(timer0), 0),
+        timer1 &&= (clearInterval(timer1), 0),
+        inVideo && e.stopImmediatePropagation(e.preventDefault()),
+        inVideo = rightClick = 0
+      );
+      let onWheel = e => {
         let p = e.x;
         let rect = video.getBoundingClientRect();
         let { x, y } = rect;
@@ -135,7 +129,23 @@
             ? wrapper.attributeStyleMap.set("filter", CSSStyleValue.parse("filter", "brightness(" + (delta ? ++brightness : --brightness) + "%)"))
             : addCue(delta)
         }
-      }, { capture: !0, passive: !1 });
+      }
+      let onFullscreenChange = () => {
+        let eventListener = self[d.fullscreenElement ? "addEventListener" : "removeEventListener"];    
+        eventListener("keydown", onKeyDown, 1);
+        eventListener("mousedown", onMouseDown, 1);
+        eventListener("mouseup", onMouseUp, 1);
+        eventListener("wheel", onWheel, { capture: !0, passive: !1 });
+      }
+      d.addEventListener("fullscreenchange", onFullscreenChange, 1);
+      onFullscreenChange();
+
+      track = video.addTextTrack("subtitles");
+      track.mode = "showing";
+      let wrapper = d.createElement("wrapper");
+      wrapper.setAttribute("style", "all:unset;display:flow;height:inherit");
+      video.after(wrapper);
+      wrapper.appendChild(video);
     }
   }
 }

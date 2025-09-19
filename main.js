@@ -7,10 +7,11 @@
   let cue;
   let { max, min } = Math;
   let brightness = 100;
-  let timer0 = 0;
-  let timer1 = 0;
-  let timer2 = 0;
-  let rightClick = 0;
+  let timer0;
+  let timer1;
+  let timer2;
+  let rightClick;
+  let inVideo;
   let onMouseHold = button => {
     if ((rightClick = button == 2) == 0) {
       let t = button = button < 4 ? -5 : 5;
@@ -53,7 +54,8 @@
       let { button } = e;
       button > 1 && (
         e.preventDefault(),
-        onMouseHold(button)
+        onMouseHold(button),
+        inVideo = 1
       )
     }
     onmouseup = () => (
@@ -99,15 +101,16 @@
           let p = e.x;
           let rect = video.getBoundingClientRect();
           p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-            e.preventDefault(),
+            e.preventDefault(inVideo = 1),
             onMouseHold(button)
           );
         }
       }, 1),
-      addEventListener("mouseup", () => (
+      addEventListener("mouseup", e => (
         timer0 &&= (clearTimeout(timer0), 0),
         timer1 &&= (clearInterval(timer1), 0),
-        rightClick = 0
+        inVideo && e.stopImmediatePropagation(e.preventDefault()),
+        inVideo = rightClick = 0
       ), 1);
       addEventListener("keydown", e => {
         let k = e.keyCode;

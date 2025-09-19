@@ -25,9 +25,9 @@
     }
   }
   let addCue = delta => {
-    let { playbackRate } = video;
     cue &&= (track.removeCue(cue), 0);
-    track.addCue(cue = new VTTCue(0, 65535, (video.playbackRate = delta ? min(playbackRate + .25, 5) : max(playbackRate - .25, .25)) + "x"));
+    let pbr = video.playbackRate;
+    track.addCue(cue = new VTTCue(0, 65535, (video.playbackRate = (delta ? Math.min(Math.floor((pbr + .11) * 10) / 10, 5) : Math.max(Math.floor((pbr - .11) * 10) / 10, .1))) + "x"));
     clearTimeout(timer2);
     timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
   }

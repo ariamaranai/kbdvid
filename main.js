@@ -1,6 +1,7 @@
 {
   let d = document;
-  let videos = d.getElementsByTagName("video");
+  let { fullscreenElement } = d;
+  let videos = (fullscreenElement ?? d).getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
   let track;
@@ -86,7 +87,7 @@
       }
       ++i;
     }
-    if (video) {
+    if (video ??= fullscreenElement?.shadowRoot?.querySelector("video")) {
       chrome.runtime.sendMessage(0);
       let inVideo;
       let onKeyDown = e => {
@@ -130,12 +131,14 @@
             : addCue(delta)
         }
       }
+      let onRateChange = e => e.stopImmediatePropagation();
       let onFullscreenChange = () => {
-        let eventListener = self[d.fullscreenElement ? "addEventListener" : "removeEventListener"];    
-        eventListener("keydown", onKeyDown, 1);
-        eventListener("mousedown", onMouseDown, 1);
-        eventListener("mouseup", onMouseUp, 1);
-        eventListener("wheel", onWheel, { capture: !0, passive: !1 });
+        let listen = self[d.fullscreenElement ? "addEventListener" : "removeEventListener"];
+        listen("keydown", onKeyDown, 1);
+        listen("mousedown", onMouseDown, 1);
+        listen("mouseup", onMouseUp, 1);
+        listen("wheel", onWheel, { capture: !0, passive: !1 });
+        listen("ratechange", onRateChange, 1);
       }
       d.addEventListener("fullscreenchange", onFullscreenChange, 1);
       onFullscreenChange();

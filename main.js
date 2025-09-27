@@ -132,7 +132,8 @@
         }
       }
       let onRateChange = e => e.stopImmediatePropagation();
-      let onFullscreenChange = () => {
+      let onFullscreenChange = e => {
+        e || d.addEventListener("fullscreenchange", onFullscreenChange, 1);
         let listen = self[d.fullscreenElement ? "addEventListener" : "removeEventListener"];
         listen("keydown", onKeyDown, 1);
         listen("mousedown", onMouseDown, 1);
@@ -140,7 +141,6 @@
         listen("wheel", onWheel, { capture: !0, passive: !1 });
         listen("ratechange", onRateChange, 1);
       }
-      d.addEventListener("fullscreenchange", onFullscreenChange, 1);
       onFullscreenChange();
 
       track = video.addTextTrack("subtitles");

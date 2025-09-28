@@ -1,7 +1,7 @@
 {
   let d = document;
   let { fullscreenElement } = d;
-  let videos = (fullscreenElement ?? d).getElementsByTagName("video");
+  let videos = d.getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
   let track;
@@ -27,7 +27,7 @@
   let addCue = delta => {
     cue &&= (track.removeCue(cue), 0);
     let pbr = video.playbackRate;
-    track.addCue(cue = new VTTCue(0, 65535, (video.playbackRate = (delta ? Math.min(Math.floor((pbr + .11) * 10) / 10, 5) : Math.max(Math.floor((pbr - .11) * 10) / 10, .1))) + "x"));
+    track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta ? Math.min(Math.floor((pbr + .11) * 10) / 10, 5) : Math.max(Math.floor((pbr - .11) * 10) / 10, .1))) + "x"));
     clearTimeout(timer2);
     timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
   }
@@ -96,7 +96,7 @@
               : k == 37 ? -5
               : k == 190 ? .03333333333333333
               : k == 188 && -.03333333333333333;
-        return t && (
+        return !t || (
           e.stopImmediatePropagation(e.preventDefault()),
           k > 39 && video.pause(),
           video.currentTime += t

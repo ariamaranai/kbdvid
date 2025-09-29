@@ -1,4 +1,4 @@
-chrome.runtime.onUserScriptMessage.addListener((m, s) => {
+chrome.runtime.onUserScriptMessage.addListener((_, s) => {
   let tabId = s.tab.id;
   chrome.action.disable(tabId);
   chrome.action.setIcon({
@@ -26,9 +26,9 @@ chrome.runtime.onUserScriptMessage.addListener((m, s) => {
   chrome.action.onClicked.addListener(f);
   chrome.windows.onBoundsChanged.addListener(window =>
     window.state == "fullscreen" &&
-    chrome.tabs.query({ active: !0, audible: !0, windowId: window.id }, tabs => {
-      tabs.length && f(tabs[0]);
-    })
+    chrome.tabs.query({ active: !0, windowId: window.id }, tabs =>
+      tabs.length && f(tabs[0])
+    )
   );
   let onStartup = () => {
     let { userScripts } = chrome;

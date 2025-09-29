@@ -1,7 +1,7 @@
 {
   let d = document;
   let { fullscreenElement } = d;
-  let videos = d.getElementsByTagName("video");
+  let videos = (fullscreenElement ?? d).getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
   let track;

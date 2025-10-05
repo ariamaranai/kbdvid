@@ -12,8 +12,9 @@
   let timer1;
   let timer2;
   let rightClick;
+  let showContextMenu;
   let onMouseHold = button => {
-    if ((rightClick = button == 2) == 0) {
+    if ((rightClick = button == 2 && performance.now()) == 0) {
       let t = button = button < 4 ? -5 : 5;
       video.currentTime += t;
       timer1 = -1;
@@ -36,6 +37,7 @@
     track = (video = videos[0]).addTextTrack("subtitles");
     track.mode = "showing";
     let root = d.documentElement;
+    oncontextmenu = e => showContextMenu || e.preventDefault(); 
     onkeydown = e => {
       let k = e.keyCode;
       if (k == 122 && !d.fullscreenElement)
@@ -61,7 +63,7 @@
     onmouseup = () => (
       timer0 &&= clearTimeout(timer0),
       timer1 &&= clearInterval(timer1),
-      rightClick = 0
+      rightClick &&= (showContextMenu = performance.now() - rightClick < 127, 0)
     );
     onwheel = e => {
       let delta = e.deltaY < 0;
@@ -90,6 +92,7 @@
     if (video ??= fullscreenElement?.shadowRoot?.querySelector("video")) {
       chrome.runtime.sendMessage(0);
       let inVideo;
+      let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault()); 
       let onKeyDown = e => {
         let k = e.keyCode;
         let t = k == 39 ? 5
@@ -117,7 +120,7 @@
         timer0 &&= clearTimeout(timer0),
         timer1 &&= clearInterval(timer1),
         inVideo &&= e.preventDefault(),
-        rightClick = 0
+        rightClick &&= (showContextMenu = performance.now() - rightClick < 127, 0)
       );
       let onWheel = e => {
         let p = e.x;
@@ -135,6 +138,7 @@
       let onFullscreenChange = e => {
         e || d.addEventListener("fullscreenchange", onFullscreenChange, 1);
         let listen = self[d.fullscreenElement ? "addEventListener" : "removeEventListener"];
+        listen("contextmenu", onContextMenu, 1);
         listen("keydown", onKeyDown, 1);
         listen("mousedown", onMouseDown, 1);
         listen("mouseup", onMouseUp, 1);

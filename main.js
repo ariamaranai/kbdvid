@@ -1,7 +1,7 @@
 {
   let d = document;
   let { fullscreenElement } = d;
-  let videos = (fullscreenElement ?? d).getElementsByTagName("video");
+  let videos = d.getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
   let track;
@@ -28,7 +28,8 @@
   let addCue = delta => {
     cue &&= (track.removeCue(cue), 0);
     let pbr = video.playbackRate;
-    track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta ? Math.min(Math.floor((pbr + .11) * 10) / 10, 5) : Math.max(Math.floor((pbr - .11) * 10) / 10, .1))) + "x"));
+    let { floor }= Math;
+    track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta ? min(floor((pbr + .11) * 10) / 10, 5) : max(floor((pbr - .11) * 10) / 10, .1))) + "x"));
     clearTimeout(timer2);
     timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
   }
@@ -136,8 +137,7 @@
       }
       let onRateChange = e => e.stopImmediatePropagation();
       let onFullscreenChange = e => {
-        e || d.addEventListener("fullscreenchange", onFullscreenChange, 1);
-        let listen = self[d.fullscreenElement ? "addEventListener" : "removeEventListener"];
+        let listen = self[!e || d.fullscreenElement ? "addEventListener" : "removeEventListener"];
         listen("contextmenu", onContextMenu, 1);
         listen("keydown", onKeyDown, 1);
         listen("mousedown", onMouseDown, 1);
@@ -146,9 +146,11 @@
         listen("ratechange", onRateChange, 1);
       }
       onFullscreenChange();
+      d.addEventListener("fullscreenchange", onFullscreenChange, 1);
 
       track = video.addTextTrack("subtitles");
       track.mode = "showing";
+
       let wrapper = d.createElement("wrapper");
       wrapper.setAttribute("style", "all:unset;display:flow;height:inherit");
       video.after(wrapper);

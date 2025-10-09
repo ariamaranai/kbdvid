@@ -1,7 +1,7 @@
 {
   let d = document;
   let { fullscreenElement } = d;
-  let videos = d.getElementsByTagName("video");
+  let videos = (fullscreenElement ?? d).getElementsByTagName("video");
   let videoLen = videos.length;
   let video;
   let track;
@@ -143,15 +143,15 @@
         let listen =
           hasListener
             ? (hasListener = 0, removeEventListener)
-            : e?.target.innerWidth == fullscreenWidth && e.target.innerHeight == fullscreenHeight && (hasListener = 1, addEventListener);
-        if (listen) {
-          listen("contextmenu", onContextMenu, 1);
-          listen("keydown", onKeyDown, 1);
-          listen("mousedown", onMouseDown, 1);
-          listen("mouseup", onMouseUp, 1);
-          listen("wheel", onWheel, { capture: !0, passive: !1 });
-          listen("ratechange", onRateChange, 1);
-        }
+            : (!e || e.target.innerWidth == fullscreenWidth && e.target.innerHeight == fullscreenHeight) && (hasListener = 1, addEventListener);
+        listen && (
+          listen("contextmenu", onContextMenu, 1),
+          listen("keydown", onKeyDown, 1),
+          listen("mousedown", onMouseDown, 1),
+          listen("mouseup", onMouseUp, 1),
+          listen("wheel", onWheel, { capture: !0, passive: !1 }),
+          listen("ratechange", onRateChange, 1)
+        );
       }
       onResize();
       addEventListener("resize", onResize, 1);

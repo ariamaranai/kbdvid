@@ -136,8 +136,8 @@
         }
       }
       let onRateChange = e => e.stopImmediatePropagation();
-      let onFullscreenChange = e => {
-        let listen = self[!e || d.fullscreenElement ? "addEventListener" : "removeEventListener"];
+      let onFullscreenChange = () => {
+        let listen = self[screen.availWidth < innerWidth + 9 && screen.availHeight < innerHeight + 9 ? "addEventListener" : "removeEventListener"];
         listen("contextmenu", onContextMenu, 1);
         listen("keydown", onKeyDown, 1);
         listen("mousedown", onMouseDown, 1);

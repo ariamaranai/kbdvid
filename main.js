@@ -142,8 +142,8 @@
       let onResize = e => {
         let listen =
           hasListener
-            ? (hasListener = 0, removeEventListener)
-            : (!e || e.target.innerWidth == fullscreenWidth && e.target.innerHeight == fullscreenHeight) && (hasListener = 1, addEventListener);
+            ? (hasListener = 0, self.removeEventListener)
+            : (!e || e.target.innerWidth == fullscreenWidth && e.target.innerHeight == fullscreenHeight) && (hasListener = 1, self.addEventListener);
         listen && (
           listen("contextmenu", onContextMenu, 1),
           listen("keydown", onKeyDown, 1),

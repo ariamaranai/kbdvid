@@ -136,17 +136,25 @@
         }
       }
       let onRateChange = e => e.stopImmediatePropagation();
-      let onFullscreenChange = () => {
-        let listen = self[screen.availWidth < innerWidth + 9 && screen.availHeight < innerHeight + 9 ? "addEventListener" : "removeEventListener"];
-        listen("contextmenu", onContextMenu, 1);
-        listen("keydown", onKeyDown, 1);
-        listen("mousedown", onMouseDown, 1);
-        listen("mouseup", onMouseUp, 1);
-        listen("wheel", onWheel, { capture: !0, passive: !1 });
-        listen("ratechange", onRateChange, 1);
+      let hasListener;
+      let fullscreenWidth = innerWidth;
+      let fullscreenHeight = innerHeight;
+      let onResize = e => {
+        let listen =
+          hasListener
+            ? (hasListener = 0, removeEventListener)
+            : e?.target.innerWidth == fullscreenWidth && e.target.innerHeight == fullscreenHeight && (hasListener = 1, addEventListener);
+        if (listen) {
+          listen("contextmenu", onContextMenu, 1);
+          listen("keydown", onKeyDown, 1);
+          listen("mousedown", onMouseDown, 1);
+          listen("mouseup", onMouseUp, 1);
+          listen("wheel", onWheel, { capture: !0, passive: !1 });
+          listen("ratechange", onRateChange, 1);
+        }
       }
-      onFullscreenChange();
-      d.addEventListener("fullscreenchange", onFullscreenChange, 1);
+      onResize();
+      addEventListener("resize", onResize, 1);
 
       track = video.addTextTrack("subtitles");
       track.mode = "showing";

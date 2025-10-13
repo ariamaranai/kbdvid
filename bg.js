@@ -11,7 +11,7 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
   });
 });
 {
-  let f = a => {
+  let actionOnClicked = a => {
     let { id: tabId } = a;
     chrome.action.getTitle({ tabId }, async title => {
       try {
@@ -23,11 +23,11 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
       } catch {}
     })
   }
-  chrome.action.onClicked.addListener(f);
+  chrome.action.onClicked.addListener(actionOnClicked);
   chrome.windows.onBoundsChanged.addListener(window =>
     window.state == "fullscreen" &&
     chrome.tabs.query({ active: !0, windowId: window.id }, tabs =>
-      tabs.length && f(tabs[0])
+      tabs.length && actionOnClicked(tabs[0])
     )
   );
   let onStartup = () => {

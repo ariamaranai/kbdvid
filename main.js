@@ -26,7 +26,7 @@
     let track;
     let cue;
     let brightness = 100;
-    let filterValue = new CSSUnparsedValue([""]);
+    let filterValue = new CSSUnparsedValue([0]);
     let timer0;
     let timer1;
     let timer2;

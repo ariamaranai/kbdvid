@@ -1,4 +1,5 @@
-chrome.runtime.onUserScriptMessage.addListener((_, s) => {
+chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
+  m && chrome.system.display.getInfo(infos => r(infos[0].bounds));
   let tabId = s.tab.id;
   chrome.action.disable(tabId);
   chrome.action.setIcon({
@@ -9,6 +10,7 @@ chrome.runtime.onUserScriptMessage.addListener((_, s) => {
     tabId,
     title: " "
   });
+  return !0;
 });
 {
   let actionOnClicked = a => {

@@ -1,6 +1,5 @@
 {
   let d = document;
-  let { fullscreenElement } = d;
   let video = d.fullscreenElement || d.scrollingElement;
   let { max, min } = Math;
   if (video?.tagName != "VIDEO") {
@@ -52,7 +51,6 @@
       clearTimeout(timer2);
       timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
-    
     if (d.head.childElementCount == 1) {
       chrome.runtime.sendMessage(0);
       track = video.addTextTrack("subtitles");
@@ -88,14 +86,13 @@
       onwheel = e => {
         let delta = e.deltaY < 0;
         rightClick
-          ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (delta ? ++brightness : --brightness) + "%)", filterValue))
+          ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += delta ? 1 : -1) + "%)", filterValue))
           : addCue(delta)
       }
       history.length > 1 &&
       (onpopstate = () => history.pushState("", "", ""))();
-    } else {
-      if (video ??= fullscreenElement?.shadowRoot?.querySelector("video")) {
-        chrome.runtime.sendMessage(0);
+    } else
+      chrome.runtime.sendMessage(1, ({width: fullscreenWidth, height: fullscreenHeight}) => {
         let inVideo;
         let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault()); 
         let onKeyDown = e => {
@@ -135,33 +132,28 @@
             e.stopImmediatePropagation(e.preventDefault());
             let delta = e.deltaY < 0;
             rightClick
-              ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (delta ? ++brightness : --brightness) + "%)", filterValue))
+              ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += delta ? 1 : -1) + "%)", filterValue))
               : addCue(delta)
           }
         }
         let onRateChange = e => e.stopImmediatePropagation();
-        let hasListener;
-        let fullscreenWidth = innerWidth;
-        let fullscreenHeight = innerHeight;
-        let onResize = e => {
-          let listen =
-            hasListener
-              ? (hasListener = 0, self.removeEventListener)
-              : (!e || e.target.innerWidth == fullscreenWidth && e.target.innerHeight == fullscreenHeight) && (hasListener = 1, self.addEventListener);
-          listen && (
-            listen("contextmenu", onContextMenu, 1),
-            listen("keydown", onKeyDown, 1),
-            listen("mousedown", onMouseDown, 1),
-            listen("mouseup", onMouseUp, 1),
-            listen("wheel", onWheel, { capture: !0, passive: !1 }),
-            listen("ratechange", onRateChange, 1)
-          );
-        }
-        onResize();
-        addEventListener("resize", onResize, 1);
+        let { addEventListener, removeEventListener } = self;
+        let listener;
+        (new ResizeObserver(() =>
+          (listener == addEventListener
+            ? listener = removeEventListener
+            : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight) && (listener = addEventListener)
+          ) && (
+            listener("contextmenu", onContextMenu, 1),
+            listener("keydown", onKeyDown, 1),
+            listener("mousedown", onMouseDown, 1),
+            listener("mouseup", onMouseUp, 1),
+            listener("wheel", onWheel, { capture: !0, passive: !1 }),
+            listener("ratechange", onRateChange, 1)
+          )
+        )).observe(d.documentElement);
         track = video.addTextTrack("subtitles");
         track.mode = "showing";
-      }
-    }
+      });
   }
 }

@@ -33,7 +33,7 @@
     let showContextMenu;
     let onMouseHold = button => {
       if ((rightClick = button == 2 && performance.now()) == 0) {
-        let t = button = button < 4 ? -5 : 5;
+        let t = button = video.playbackRate * (button < 4 ? -5 : 5);
         video.currentTime += t;
         timer1 = -1;
         timer0 = setTimeout(() => (
@@ -62,8 +62,8 @@
           video.requestFullscreen(e.preventDefault())
         else {
           let t =
-              k == 39 ? 5
-            : k == 37 ? -5
+              k == 39 ? video.playbackRate * 5
+            : k == 37 ? video.playbackRate * -5
             : k == 190 ? .03333333333333333
             : k == 188 && -.03333333333333333;
           t ? (e.preventDefault(), k > 39 && video.pause(), video.currentTime += t)
@@ -91,14 +91,14 @@
       }
       history.length > 1 &&
       (onpopstate = () => history.pushState("", "", ""))();
-    } else
+    } else {
       chrome.runtime.sendMessage(1, ({width: fullscreenWidth, height: fullscreenHeight}) => {
         let inVideo;
         let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault()); 
         let onKeyDown = e => {
           let k = e.keyCode;
-          let t = k == 39 ? 5
-                : k == 37 ? -5
+          let t = k == 39 ? video.playbackRate * 5
+                : k == 37 ? video.playbackRate * -5
                 : k == 190 ? .03333333333333333
                 : k == 188 && -.03333333333333333;
           return !t || (
@@ -155,5 +155,6 @@
         track = video.addTextTrack("subtitles");
         track.mode = "showing";
       });
+    }
   }
 }

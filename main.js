@@ -81,7 +81,7 @@
       onmouseup = () => (
         timer0 &&= clearTimeout(timer0),
         timer1 &&= clearInterval(timer1),
-        rightClick &&= (showContextMenu = performance.now() - rightClick < 127, 0)
+        rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
       );
       onwheel = e => {
         let delta = e.deltaY < 0;
@@ -122,7 +122,7 @@
           timer0 &&= clearTimeout(timer0),
           timer1 &&= clearInterval(timer1),
           inVideo &&= e.preventDefault(),
-          rightClick &&= (showContextMenu = performance.now() - rightClick < 127, 0)
+          rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
         );
         let onWheel = e => {
           let p = e.x;

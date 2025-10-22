@@ -31,6 +31,19 @@
     let timer2;
     let rightClick;
     let showContextMenu;
+    let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault());
+    let onMouseDown = e => {
+      let { button } = e;
+      button > 1 && (
+        e.preventDefault(),
+        onMouseHold(button)
+      )
+    }
+    let onMouseUp = () => (
+      timer0 &&= clearTimeout(timer0),
+      timer1 &&= clearInterval(timer1),
+      rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
+    );
     let onMouseHold = button => {
       if ((rightClick = button == 2 && performance.now()) == 0) {
         let t = button = video.playbackRate * (button < 4 ? -5 : 5);
@@ -43,6 +56,13 @@
         );
       }
     }
+    let onWheel = e => {
+      e.stopImmediatePropagation(e.preventDefault());
+      let delta = e.deltaY < 0;
+      rightClick
+        ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += delta ? 1 : -1) + "%)", filterValue))
+        : addCue(delta);
+    }
     let addCue = delta => {
       cue &&= (track.removeCue(cue), 0);
       let pbr = video.playbackRate;
@@ -51,11 +71,11 @@
       clearTimeout(timer2);
       timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
-    if (d.head.childElementCount == 1) {
+    if (d.head?.childElementCount == 1) {
       chrome.runtime.sendMessage(0);
       track = video.addTextTrack("subtitles");
       track.mode = "showing";
-      oncontextmenu = e => showContextMenu || e.preventDefault(); 
+      oncontextmenu = onContextMenu;
       onkeydown = e => {
         let k = e.keyCode;
         if (k == 122 && !d.fullscreenElement)
@@ -71,30 +91,13 @@
         }
         return !0;
       }
-      onmousedown = e => {
-        let { button } = e;
-        button > 1 && (
-          e.preventDefault(),
-          onMouseHold(button)
-        )
-      }
-      onmouseup = () => (
-        timer0 &&= clearTimeout(timer0),
-        timer1 &&= clearInterval(timer1),
-        rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
-      );
-      onwheel = e => {
-        let delta = e.deltaY < 0;
-        rightClick
-          ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += delta ? 1 : -1) + "%)", filterValue))
-          : addCue(delta)
-      }
+      onmousedown = onMouseDown;
+      onmouseup = onMouseUp;
+      onwheel = onWheel;
       history.length > 1 &&
       (onpopstate = () => history.pushState("", "", ""))();
     } else {
-      chrome.runtime.sendMessage(1, ({width: fullscreenWidth, height: fullscreenHeight}) => {
-        let inVideo;
-        let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault()); 
+      chrome.runtime.sendMessage(1, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
         let onKeyDown = e => {
           let k = e.keyCode;
           let t = k == 39 ? video.playbackRate * 5
@@ -107,41 +110,12 @@
             video.currentTime += t
           )
         }
-        let onMouseDown = e => {
-          let { button } = e;
-          if (button > 1) {
-            let p = e.x;
-            let rect = video.getBoundingClientRect();
-            p <= rect.right && p >= rect.x && (p = e.y) <= rect.bottom && p >= rect.y && (
-              e.preventDefault(inVideo = 1),
-              onMouseHold(button)
-            );
-          }
-        }
-        let onMouseUp = e => (
-          timer0 &&= clearTimeout(timer0),
-          timer1 &&= clearInterval(timer1),
-          inVideo &&= e.preventDefault(),
-          rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
-        );
-        let onWheel = e => {
-          let p = e.x;
-          let rect = video.getBoundingClientRect();
-          let { x, y } = rect;
-          if (p >= x && p <= rect.right && (p = e.y) >= y && p <= rect.bottom) {
-            e.stopImmediatePropagation(e.preventDefault());
-            let delta = e.deltaY < 0;
-            rightClick
-              ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += delta ? 1 : -1) + "%)", filterValue))
-              : addCue(delta)
-          }
-        }
         let onRateChange = e => e.stopImmediatePropagation();
         let { addEventListener, removeEventListener } = self;
         let listener;
         (new ResizeObserver(() =>
           (listener == addEventListener
-            ? listener = removeEventListener
+            ? (listener = removeEventListener)
             : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight) && (listener = addEventListener)
           ) && (
             listener("contextmenu", onContextMenu, 1),

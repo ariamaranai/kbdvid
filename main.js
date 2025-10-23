@@ -71,10 +71,9 @@
       clearTimeout(timer2);
       timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
+    let setTrack = () => (track = video.addTextTrack("subtitles")).mode = "showing";
     if (d.head?.childElementCount == 1) {
       chrome.runtime.sendMessage(0);
-      track = video.addTextTrack("subtitles");
-      track.mode = "showing";
       oncontextmenu = onContextMenu;
       onkeydown = e => {
         let k = e.keyCode;
@@ -98,6 +97,7 @@
       (onpopstate = () => history.pushState("", "", ""))();
     } else {
       chrome.runtime.sendMessage(1, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
+        let currentUrl = location.href;
         let onKeyDown = e => {
           let k = e.keyCode;
           let t = k == 39 ? video.playbackRate * 5
@@ -126,9 +126,13 @@
             listener("ratechange", onRateChange, 1)
           )
         )).observe(d.documentElement);
-        track = video.addTextTrack("subtitles");
-        track.mode = "showing";
+        addEventListener("loadedmetadata", ({ target }) =>
+          target.tagName == "VIDEO" && video != target && currentUrl != location.href && (
+          video = target,
+          setTrack()
+        ), 1);
       });
     }
+    setTrack();
   }
 }

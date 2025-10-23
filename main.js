@@ -127,10 +127,9 @@
           )
         )).observe(d.documentElement);
         addEventListener("loadedmetadata", ({ target }) =>
-          target.tagName == "VIDEO" && video != target && currentUrl != location.href && (
-          video = target,
-          setTrack()
-        ), 1);
+          target.tagName == "VIDEO" && video != target && currentUrl != location.href &&
+          setTrack(video = target)
+        , 1);
       });
     }
     setTrack();

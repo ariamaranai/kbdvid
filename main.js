@@ -94,7 +94,7 @@
       onmouseup = onMouseUp;
       onwheel = onWheel;
       history.length > 1 &&
-      (onpopstate = () => history.pushState("", "", ""))();
+      (onpopstate = () => history.pushState(0, 0, ""))();
     } else {
       chrome.runtime.sendMessage(1, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
         let currentUrl = location.href;

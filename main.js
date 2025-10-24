@@ -37,9 +37,10 @@
       button > 1 && (
         e.preventDefault(),
         onMouseHold(button)
-      )
+      );
     }
-    let onMouseUp = () => (
+    let onMouseUp = e => (
+      e.button > 2 && e.preventDefault(),
       timer0 &&= clearTimeout(timer0),
       timer1 &&= clearInterval(timer1),
       rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
@@ -93,8 +94,6 @@
       onmousedown = onMouseDown;
       onmouseup = onMouseUp;
       onwheel = onWheel;
-      history.length > 1 &&
-      (onpopstate = () => history.pushState(0, 0, ""))();
     } else {
       chrome.runtime.sendMessage(1, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
         let currentUrl = location.href;

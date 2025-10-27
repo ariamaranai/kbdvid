@@ -79,7 +79,7 @@
       onkeydown = e => {
         let k = e.keyCode;
         if (k == 122 && !d.fullscreenElement)
-          video.requestFullscreen(e.preventDefault())
+          video.requestFullscreen(e.preventDefault());
         else {
           let t =
               k == 39 ? video.playbackRate * 5
@@ -124,7 +124,7 @@
             listener("wheel", onWheel, { capture: !0, passive: !1 }),
             listener("ratechange", onRateChange, 1)
           )
-        )).observe(d.documentElement);
+        )).observe(video);
         addEventListener("loadedmetadata", ({ target }) =>
           target.tagName == "VIDEO" && video != target && currentUrl != location.href &&
           setTrack(video = target)

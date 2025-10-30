@@ -9,8 +9,8 @@
     while (i < videos.length) {
       let _video = videos[i];
       if (_video.readyState) {
-        let { x, right, y, bottom } = _video.getBoundingClientRect();
-        let visibleSize = max(min(right, innerWidth) - max(x, 0), 0) * max(min(bottom, innerHeight) - max(y, 0), 0);
+        let rect = _video.getBoundingClientRect();
+        let visibleSize = max(min(rect.right, innerWidth) - max(rect.x, 0), 0) * max(min(rect.bottom, innerHeight) - max(rect.y, 0), 0);
         maxVisibleSize < visibleSize && (
           maxVisibleSize = visibleSize,
           video = _video
@@ -25,6 +25,7 @@
     let track;
     let cue;
     let brightness = 100;
+    let contrast = 100;
     let filterValue = new CSSUnparsedValue([0]);
     let timer0;
     let timer1;
@@ -33,7 +34,7 @@
     let showContextMenu;
     let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault());
     let onMouseDown = e => {
-      let { button } = e;
+      let button = e.button;
       button > 1 && (
         e.preventDefault(),
         onMouseHold(button)
@@ -47,7 +48,7 @@
     );
     let onMouseHold = button => {
       if ((rightClick = button == 2 && performance.now()) == 0) {
-        let t = button = video.playbackRate * (button < 4 ? -5 : 5);
+        let t = video.playbackRate * (button < 4 ? -5 : 5);
         video.currentTime += t;
         timer1 = -1;
         timer0 = setTimeout(() => (
@@ -59,16 +60,16 @@
     }
     let onWheel = e => {
       e.stopImmediatePropagation(e.preventDefault());
-      let delta = e.deltaY < 0;
+      let delta = Math.sign(e.deltaY);
       rightClick
-        ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += delta ? 1 : -1) + "%)", filterValue))
+        ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += -delta) + "%) contrast(" + (contrast += delta) + "%)", filterValue))
         : addCue(delta);
     }
     let addCue = delta => {
       cue &&= (track.removeCue(cue), 0);
       let pbr = video.playbackRate;
-      let { floor }= Math;
-      track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta ? min(floor((pbr + .11) * 10) / 10, 5) : max(floor((pbr - .11) * 10) / 10, .1))) + "x"));
+      let floor= Math.floor;
+      track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta < 0 ? min(floor((pbr + .055) * 20) / 20, 5) : max(floor((pbr - .055) * 20) / 20, .1))) + "x"));
       clearTimeout(timer2);
       timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
@@ -110,7 +111,6 @@
           )
         }
         let onRateChange = e => e.stopImmediatePropagation();
-        let { addEventListener, removeEventListener } = self;
         let listener;
         (new ResizeObserver(() =>
           (listener == addEventListener

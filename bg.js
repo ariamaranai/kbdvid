@@ -14,7 +14,7 @@ chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
 });
 {
   let actionOnClicked = a => {
-    let { id: tabId } = a;
+    let tabId = a.id;
     chrome.action.getTitle({ tabId }, async title => {
       try {
         title == "kbdvid" &&
@@ -33,7 +33,7 @@ chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
     )
   );
   let onStartup = () => {
-    let { userScripts } = chrome;
+    let userScripts = chrome.userScripts;
     userScripts &&
     userScripts.getScripts(scripts =>
       scripts.length || (

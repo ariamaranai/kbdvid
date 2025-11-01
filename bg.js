@@ -33,7 +33,7 @@ chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
     )
   );
   let onStartup = () => {
-    let userScripts = chrome.userScripts;
+    let { userScripts } = chrome;
     userScripts &&
     userScripts.getScripts(scripts =>
       scripts.length || (

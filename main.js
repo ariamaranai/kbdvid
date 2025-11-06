@@ -1,28 +1,33 @@
 {
   let d = document;
-  let video = d.fullscreenElement || d.scrollingElement;
+  let video = 0;
+  let track;
   let { max, min } = Math;
-  if (video?.tagName != "VIDEO") {
-    let videos = video.getElementsByTagName("VIDEO");
-    let maxVisibleSize = 0;
-    let i = 0;
-    while (i < videos.length) {
-      let _video = videos[i];
-      if (_video.readyState) {
-        let rect = _video.getBoundingClientRect();
-        let visibleSize = max(min(rect.right, innerWidth) - max(rect.x, 0), 0) * max(min(rect.bottom, innerHeight) - max(rect.y, 0), 0);
-        maxVisibleSize < visibleSize && (
-          maxVisibleSize = visibleSize,
-          video = _video
-        );
+  let getVideo = () => {
+    video = d.fullscreenElement || d.scrollingElement;
+    if (video?.tagName != "VIDEO") {
+      let videos = video.getElementsByTagName("VIDEO");
+      let maxVisibleSize = 0;
+      let i = 0;
+      while (i < videos.length) {
+        let _video = videos[i];
+        if (_video.readyState) {
+          let rect = _video.getBoundingClientRect();
+          let visibleSize = max(min(rect.right, innerWidth) - max(rect.x, 0), 0) * max(min(rect.bottom, innerHeight) - max(rect.y, 0), 0);
+          maxVisibleSize < visibleSize && (
+            maxVisibleSize = visibleSize,
+            video = _video
+          );
+        }
+        ++i;
       }
-      ++i;
-    }
-    video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"))?.readyState || (video = 0);
-  } else
-    video.readyState || (video = 0);
+      video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"))?.readyState || (video = 0);
+    } else
+      video.readyState || (video = 0);
+    video && ((track = video.addTextTrack("subtitles")).mode = "showing");
+  }
+  getVideo();
   if (video) {
-    let track;
     let cue;
     let brightness = 100;
     let contrast = 100;
@@ -73,7 +78,6 @@
       clearTimeout(timer2);
       timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
-    let setTrack = () => (track = video.addTextTrack("subtitles")).mode = "showing";
     if (d.head?.childElementCount == 1) {
       chrome.runtime.sendMessage(0);
       oncontextmenu = onContextMenu;
@@ -96,8 +100,7 @@
       onmouseup = onMouseUp;
       onwheel = onWheel;
     } else {
-      chrome.runtime.sendMessage(1, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
-        let currentUrl = location.href;
+      chrome.runtime.sendMessage(null, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
         let onKeyDown = e => {
           let k = e.keyCode;
           let t = k == 39 ? video.playbackRate * 5
@@ -112,25 +115,23 @@
         }
         let onRateChange = e => e.stopImmediatePropagation();
         let listener;
-        (new ResizeObserver(() =>
-          (listener == addEventListener
-            ? (listener = removeEventListener)
-            : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight) && (listener = addEventListener)
-          ) && (
+        let observer = new ResizeObserver(() => {
+          (listener =
+            listener == addEventListener
+              ? (video = observer.unobserve(video), chrome.runtime.sendMessage(1), removeEventListener)
+              : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight)
+                && (video || getVideo(), video && observer.observe(video), addEventListener)) &&
+          video != 0 && (
             listener("contextmenu", onContextMenu, 1),
             listener("keydown", onKeyDown, 1),
             listener("mousedown", onMouseDown, 1),
             listener("mouseup", onMouseUp, 1),
             listener("wheel", onWheel, { capture: !0, passive: !1 }),
             listener("ratechange", onRateChange, 1)
-          )
-        )).observe(video);
-        addEventListener("loadedmetadata", ({ target }) =>
-          target.tagName == "VIDEO" && video != target && currentUrl != location.href &&
-          setTrack(video = target)
-        , 1);
+          );
+        });
+        observer.observe(video);
       });
     }
-    setTrack();
   }
 }

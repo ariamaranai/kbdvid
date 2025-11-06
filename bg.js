@@ -1,15 +1,10 @@
 chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
-  m && chrome.system.display.getInfo(infos => r(infos[0].bounds));
+  m ?? chrome.system.display.getInfo(infos => r(infos[0].bounds));
   let tabId = s.tab.id;
+  let title = " ";
   chrome.action.disable(tabId);
-  chrome.action.setIcon({
-    tabId,
-    path: "on.png"
-  });
-  chrome.action.setTitle({
-    tabId,
-    title: " "
-  });
+  chrome.action.setIcon({ tabId, path: m ? (title = "kbdvid", "off.png") : "on.png" });
+  chrome.action.setTitle({ tabId, title });
   return !0;
 });
 {

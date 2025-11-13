@@ -64,10 +64,13 @@
       }
     }
     let onWheel = e => {
-      e.stopImmediatePropagation(e.preventDefault());
+      try {
+        e.preventDefault();
+      } catch {}
+      e.stopImmediatePropagation();
       let delta = Math.sign(e.deltaY);
       rightClick
-        ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness += -delta) + "%) contrast(" + (contrast += delta) + "%)", filterValue))
+        ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness -= delta) + "%) contrast(" + (contrast += delta) + "%)", filterValue))
         : addCue(delta);
     }
     let addCue = delta => {

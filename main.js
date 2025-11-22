@@ -64,9 +64,7 @@
       }
     }
     let onWheel = e => {
-      try {
-        e.preventDefault();
-      } catch {}
+      e.preventDefault();
       e.stopImmediatePropagation();
       let delta = Math.sign(e.deltaY);
       rightClick
@@ -101,7 +99,7 @@
       }
       onmousedown = onMouseDown;
       onmouseup = onMouseUp;
-      onwheel = onWheel;
+      addEventListener("wheel", onWheel, { passive: !1 });
     } else {
       chrome.runtime.sendMessage(null, ({ width: fullscreenWidth, height: fullscreenHeight }) => {
         let onKeyDown = e => {

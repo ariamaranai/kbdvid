@@ -4,27 +4,28 @@
   let track;
   let { max, min } = Math;
   let getVideo = () => {
-    video = d.fullscreenElement || d.scrollingElement;
-    if (video?.tagName != "VIDEO") {
-      let videos = video.getElementsByTagName("VIDEO");
-      let maxVisibleSize = 0;
-      let i = 0;
-      while (i < videos.length) {
-        let _video = videos[i];
-        if (_video.readyState) {
-          let rect = _video.getBoundingClientRect();
-          let visibleSize = max(min(rect.right, innerWidth) - max(rect.x, 0), 0) * max(min(rect.bottom, innerHeight) - max(rect.y, 0), 0);
-          maxVisibleSize < visibleSize && (
-            maxVisibleSize = visibleSize,
-            video = _video
-          );
+    if (video = d.fullscreenElement || d.scrollingElement) {
+      if (video?.tagName != "VIDEO") {
+        let videos = video.getElementsByTagName("VIDEO");
+        let maxVisibleSize = 0;
+        let i = 0;
+        while (i < videos.length) {
+          let _video = videos[i];
+          if (_video.readyState) {
+            let rect = _video.getBoundingClientRect();
+            let visibleSize = max(min(rect.right, innerWidth) - max(rect.x, 0), 0) * max(min(rect.bottom, innerHeight) - max(rect.y, 0), 0);
+            maxVisibleSize < visibleSize && (
+              maxVisibleSize = visibleSize,
+              video = _video
+            );
+          }
+          ++i;
         }
-        ++i;
-      }
-      video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"))?.readyState || (video = 0);
-    } else
-      video.readyState || (video = 0);
-    video && ((track = video.addTextTrack("subtitles")).mode = "showing");
+        video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"))?.readyState || (video = 0);
+      } else
+        video.readyState || (video = 0);
+      video && ((track = video.addTextTrack("subtitles")).mode = "showing");
+    }
   }
   getVideo();
   if (video) {

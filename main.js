@@ -122,7 +122,8 @@
             listener == addEventListener
               ? (video = observer.unobserve(video), chrome.runtime.sendMessage(1), removeEventListener)
               : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight)
-                && (video || getVideo(), video && observer.observe(video), addEventListener)) &&
+                && (video || getVideo(), video && observer.observe(video), addEventListener)
+          ) &&
           video != 0 && (
             listener("contextmenu", onContextMenu, 1),
             listener("keydown", onKeyDown, 1),

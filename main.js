@@ -21,14 +21,13 @@
           }
           ++i;
         }
-        video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"))?.readyState || (video = 0);
-      } else
-        video.readyState || (video = 0);
-      video && ((track = video.addTextTrack("subtitles")).mode = "showing");
+        video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"));
+      }
+      video?.readyState ? ((track = video.addTextTrack("subtitles")).mode = "showing") : (video = 0);
     }
+    return video;
   }
-  getVideo();
-  if (video) {
+  if (getVideo()) {
     let cue;
     let brightness = 100;
     let contrast = 100;
@@ -122,7 +121,7 @@
             listener == addEventListener
               ? (video = observer.unobserve(video), chrome.runtime.sendMessage(1), removeEventListener)
               : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight)
-                && (video || getVideo(), video && observer.observe(video), addEventListener)
+                && ((video || getVideo()) && observer.observe(video), addEventListener)
           ) &&
           video != 0 && (
             listener("contextmenu", onContextMenu, 1),

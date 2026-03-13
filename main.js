@@ -23,7 +23,7 @@
         }
         video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"));
       }
-      video?.readyState ? ((track = video.addTextTrack("subtitles")).mode = "showing") : (video = 0);
+      video?.readyState ? (track = video.addTextTrack("subtitles")).mode = "showing" : video = 0;
     }
     return video;
   }

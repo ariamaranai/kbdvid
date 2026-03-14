@@ -6,7 +6,7 @@
   let getVideo = () => {
     if (video = d.fullscreenElement || d.scrollingElement) {
       if (!(video instanceof HTMLVideoElement)) {
-        let videos = video.getElementsByTagName("VIDEO");
+        let videos = video.getElementsByTagName("video");
         let maxVisibleSize = 0;
         let i = 0;
         while (i < videos.length) {
@@ -21,7 +21,7 @@
           }
           ++i;
         }
-        video?.readyState || (video = video.shadowRoot?.querySelector("VIDEO"));
+        video?.readyState || (video = video.shadowRoot?.querySelector("video"));
       }
       video?.readyState ? (track = video.addTextTrack("subtitles")).mode = "showing" : video = 0;
     }
@@ -52,7 +52,7 @@
       rightClick &&= (showContextMenu = performance.now() - rightClick < 300, 0)
     );
     let onMouseHold = button => {
-      if ((rightClick = button == 2 && performance.now()) == 0) {
+      if (!(rightClick = button == 2 && performance.now())) {
         let t = video.playbackRate * (button < 4 ? -5 : 5);
         video.currentTime += t;
         timer1 = -1;

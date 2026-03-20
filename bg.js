@@ -1,4 +1,4 @@
-chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
+chrome.runtime.onMessage.addListener((m, s, r) => {
   m ?? chrome.system.display.getInfo(infos => r(infos[0].bounds));
   let tabId = s.tab.id;
   let title = " ";
@@ -13,9 +13,9 @@ chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
     chrome.action.getTitle({ tabId }, async title => {
       try {
         title == "kbdvid" &&
-        await chrome.userScripts.execute({
+        await chrome.scripting.executeScript({
           target: { tabId, allFrames: !0 },
-          js: [{ file: "main.js" }]
+          files: ["main.js"]
         });
       } catch {}
     })
@@ -28,14 +28,11 @@ chrome.runtime.onUserScriptMessage.addListener((m, s, r) => {
     )
   );
   let onStartup = () => {
-    let { userScripts } = chrome;
-    userScripts &&
-    userScripts.getScripts(scripts =>
+    chrome.scripting.getRegisteredContentScripts(scripts =>
       scripts.length || (
-        userScripts.configureWorld({ messaging: !0 }),
-        userScripts.register([{
+        chrome.scripting.registerContentScripts([{
           id: "0",
-          js: [{ file: "main.js" }],
+          js: ["main.js"],
           matches: ["https://*/*.mp4*", "file://*.mp4*"],
           runAt: "document_end"
         }]),

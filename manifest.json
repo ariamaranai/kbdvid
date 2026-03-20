@@ -7,9 +7,9 @@
     "128": "off.png"
   },
   "permissions": [
+    "scripting",
     "system.display",
-    "tabs",
-    "userScripts"
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

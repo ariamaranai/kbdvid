@@ -34,6 +34,7 @@ chrome.runtime.onMessage.addListener((m, s, r) => {
           id: "0",
           js: ["main.js"],
           matches: ["https://*/*.mp4*", "file://*.mp4*"],
+          world: "MAIN",
           runAt: "document_end"
         }]),
         chrome.runtime.onStartup.removeListener(onStartup) 

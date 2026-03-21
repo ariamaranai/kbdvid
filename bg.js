@@ -15,8 +15,7 @@ chrome.runtime.onMessage.addListener((m, s, r) => {
         title == "kbdvid" &&
         await chrome.scripting.executeScript({
           target: { tabId, allFrames: !0 },
-          files: ["main.js"],
-          world: "MAIN"
+          files: ["main.js"]
         });
       } catch {}
     })
@@ -35,7 +34,6 @@ chrome.runtime.onMessage.addListener((m, s, r) => {
           id: "0",
           js: ["main.js"],
           matches: ["https://*/*.mp4*", "file://*.mp4*"],
-          world: "MAIN",
           runAt: "document_end"
         }]),
         chrome.runtime.onStartup.removeListener(onStartup) 

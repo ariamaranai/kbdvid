@@ -31,7 +31,6 @@
     let cue;
     let brightness = 100;
     let contrast = 100;
-    let filterValue = new CSSUnparsedValue([0]);
     let timer0;
     let timer1;
     let timer2;
@@ -68,7 +67,7 @@
       e.stopImmediatePropagation();
       let delta = Math.sign(e.deltaY);
       rightClick
-        ? video.attributeStyleMap.set("filter", (filterValue[0] = "brightness(" + (brightness -= delta) + "%) contrast(" + (contrast += delta) + "%)", filterValue))
+        ? video.style.filter = "brightness(" + (brightness -= delta) + "%) contrast(" + (contrast += delta) + "%)"
         : addCue(delta);
     }
     let addCue = delta => {

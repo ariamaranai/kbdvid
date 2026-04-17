@@ -66,7 +66,7 @@
       e.preventDefault();
       e.stopImmediatePropagation();
       let delta = Math.sign(e.deltaY);
-      rightClick
+      return rightClick
         ? video.style.filter = "brightness(" + (brightness -= delta) + "%) contrast(" + (contrast += delta) + "%)"
         : addCue(delta);
     }
@@ -76,7 +76,7 @@
       let floor= Math.floor;
       track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta < 0 ? min(floor((pbr + .055) * 20) / 20, 5) : max(floor((pbr - .055) * 20) / 20, .1))) + "x"));
       clearTimeout(timer2);
-      timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
+      return timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
     if (d.head?.childElementCount == 1) {
       chrome.runtime.sendMessage(0);
@@ -116,7 +116,7 @@
         let onRateChange = e => e.stopImmediatePropagation();
         let listener;
         let observer = new ResizeObserver(() => {
-          (listener =
+          return (listener =
             listener == addEventListener
               ? (video = observer.unobserve(video), chrome.runtime.sendMessage(1), removeEventListener)
               : (!listener || innerWidth == fullscreenWidth && innerHeight == fullscreenHeight)

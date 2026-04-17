@@ -39,7 +39,7 @@
     let onContextMenu = e => showContextMenu || e.stopImmediatePropagation(e.preventDefault());
     let onMouseDown = e => {
       let button = e.button;
-      button > 1 && (
+      return button > 1 && (
         e.preventDefault(),
         onMouseHold(button)
       );

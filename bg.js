@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener((m, s, r) => {
 {
   let actionOnClicked = a => {
     let tabId = a.id;
-    chrome.action.getTitle({ tabId }, async title => {
+    return chrome.action.getTitle({ tabId }, async title => {
       try {
         title == "kbdvid" &&
         await chrome.scripting.executeScript({

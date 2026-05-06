@@ -73,8 +73,7 @@
     let addCue = delta => {
       cue &&= (track.removeCue(cue), 0);
       let pbr = video.playbackRate;
-      let floor= Math.floor;
-      track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta < 0 ? min(floor((pbr + .055) * 20) / 20, 5) : max(floor((pbr - .055) * 20) / 20, .1))) + "x"));
+      track.addCue(cue = new VTTCue(0, 2147483647, (video.playbackRate = (delta < 0 ? min(((pbr + .055) * 20 ^ 0) / 20, 5) : max(((pbr - .055) * 20 ^ 0) / 20, .1))) + "x"));
       clearTimeout(timer2);
       return timer2 = setTimeout(() => cue &&= (track.removeCue(cue), 0), 2000);
     }
